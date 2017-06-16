@@ -20,17 +20,15 @@
 // region imports
 import {spawn as spawnChildProcess} from 'child_process'
 import Tools from 'clientnode'
-import type {File, PlainObject} from 'clientnode'
+import type {File} from 'clientnode'
 import path from 'path'
 import removeDirectoryRecursively from 'rimraf'
 // NOTE: Only needed for debugging this file.
 try {
     require('source-map-support/register')
 } catch (error) {}
-import WebNodePluginAPI from 'web-node/pluginAPI'
-import type {Configuration, Plugin, Services} from 'web-node/type'
-
 import PluginAPI from 'web-node/pluginAPI'
+import type {Configuration, Plugin, Services} from 'web-node/type'
 // endregion
 /**
  * Provides a pre-rendering hook for webNode applications.
@@ -209,7 +207,7 @@ export default class PreRender {
     static async render(
         givenScope:?Object, configuration:Configuration, plugins:Array<Plugin>
     ):Promise<Object> {
-        const preRendererFiles:Array<File> = await WebNodePluginAPI.callStack(
+        const preRendererFiles:Array<File> = await PluginAPI.callStack(
             'prePreRendererRender', plugins, configuration,
             await Template.getPrerenderFiles(configuration, plugins), scope)
         const preRenderingPromises:Array<Promise<string>> = []
@@ -229,7 +227,7 @@ export default class PreRender {
                         ) ? resolve : reject))
             }))
         await Promise.all(preRenderingPromises)
-        return await WebNodePluginAPI.callStack(
+        return await PluginAPI.callStack(
             'postPreRendererRender', plugins, configuration, scope,
             preRendererFiles)
     }
