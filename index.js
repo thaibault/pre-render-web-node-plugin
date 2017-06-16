@@ -51,7 +51,7 @@ export default class PreRender {
         oldConfiguration:Configuration, plugins:Array<Plugin>
     ):Promise<Configuration> {
         if (configuration.preRender.renderAfterConfigurationUpdates)
-            PreRender.render(null, configuration, plugins)
+            PreRender.render(configuration, plugins)
         return configuration
     }
     /**
@@ -138,7 +138,7 @@ export default class PreRender {
                     NOTE: Avoid to found nested folders since we will clear
                     them recursively and asynchronous.
                 */
-                if (file.state.isDirectory(
+                if (file.stat.isDirectory(
                 ) && configuration.preRender.directoryNames.includes(
                     file.name
                 ))
@@ -199,20 +199,19 @@ export default class PreRender {
     }
     /**
      * Triggers pre-rendering.
-     * @param givenScope - Scope to use for rendering templates.
      * @param configuration - Configuration object.
      * @param plugins - List of all loaded plugins.
-     * @returns Scope uses for template rendering.
+     * @returns A Promise resolving to a list of prerenderer files.
      */
     static async render(
-        givenScope:?Object, configuration:Configuration, plugins:Array<Plugin>
+        configuration:Configuration, plugins:Array<Plugin>
     ):Promise<Object> {
         const preRendererFiles:Array<File> = await PluginAPI.callStack(
             'prePreRendererRender', plugins, configuration,
-            await Template.getPrerenderFiles(configuration, plugins), scope)
+            await PreRender.getPrerenderFiles(configuration, plugins))
         const preRenderingPromises:Array<Promise<string>> = []
         for (const file:File of preRendererFiles)
-            preRendereringPromises.push(new Promise((
+            preRenderingPromises.push(new Promise((
                 resolve:Function, reject:Function
             ):void => {
                 for (const closeEventName:string of Tools.closeEventNames)
@@ -228,8 +227,7 @@ export default class PreRender {
             }))
         await Promise.all(preRenderingPromises)
         return await PluginAPI.callStack(
-            'postPreRendererRender', plugins, configuration, scope,
-            preRendererFiles)
+            'postPreRendererRender', plugins, configuration, preRendererFiles)
     }
     // endregion
 }
