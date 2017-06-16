@@ -42,6 +42,7 @@
   },
   "dependencies": {
     "clientnode": "latest",
+    "rimraf": "latest",
     "weboptimizer": "latest",
     "web-node": "latest"
   },
@@ -56,7 +57,11 @@
         "database",
         "log",
         "mockup"
-      ]
+      ],
+      "fileBaseNames": [
+        "preRender"
+      ],
+      "renderAfterConfigurationUpdates": false
     }
   },
   "webOptimizer": {
