@@ -153,7 +153,7 @@ export default class PreRender {
      * @param plugins - List of all loaded plugins.
      * @returns A promise holding all resolved files.
      */
-    static async getPrerenderFiles(
+    static async getPrerendererFiles(
         configuration:Configuration, plugins:Array<Plugin>
     ):Promise<Array<File>> {
         const pluginPaths:Array<string> = plugins.map((plugin:Plugin):string =>
@@ -208,7 +208,7 @@ export default class PreRender {
     ):Promise<Object> {
         const preRendererFiles:Array<File> = await PluginAPI.callStack(
             'prePreRendererRender', plugins, configuration,
-            await PreRender.getPrerenderFiles(configuration, plugins))
+            await PreRender.getPrerendererFiles(configuration, plugins))
         const preRenderingPromises:Array<Promise<string>> = []
         for (const file:File of preRendererFiles)
             preRenderingPromises.push(new Promise((
