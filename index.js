@@ -18,7 +18,7 @@
     endregion
 */
 // region imports
-import {ChildProces, spawn as spawnChildProcess} from 'child_process'
+import {ChildProcess, spawn as spawnChildProcess} from 'child_process'
 import Tools from 'clientnode'
 import type {File} from 'clientnode'
 import path from 'path'
