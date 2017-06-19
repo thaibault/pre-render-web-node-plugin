@@ -18,7 +18,7 @@
     endregion
 */
 // region imports
-import {spawn as spawnChildProcess} from 'child_process'
+import {ChildProcess, spawn as spawnChildProcess} from 'child_process'
 import Tools from 'clientnode'
 import type {File} from 'clientnode'
 import path from 'path'
@@ -153,7 +153,7 @@ export default class PreRender {
      * @param plugins - List of all loaded plugins.
      * @returns A promise holding all resolved files.
      */
-    static async getPrerenderFiles(
+    static async getPrerendererFiles(
         configuration:Configuration, plugins:Array<Plugin>
     ):Promise<Array<File>> {
         const pluginPaths:Array<string> = plugins.map((plugin:Plugin):string =>
@@ -208,22 +208,25 @@ export default class PreRender {
     ):Promise<Object> {
         const preRendererFiles:Array<File> = await PluginAPI.callStack(
             'prePreRendererRender', plugins, configuration,
-            await PreRender.getPrerenderFiles(configuration, plugins))
+            await PreRender.getPrerendererFiles(configuration, plugins))
         const preRenderingPromises:Array<Promise<string>> = []
         for (const file:File of preRendererFiles)
             preRenderingPromises.push(new Promise((
                 resolve:Function, reject:Function
             ):void => {
-                for (const closeEventName:string of Tools.closeEventNames)
-                    spawnChildProcess(file.path, [], {
+                const childProcess:ChildProcess = spawnChildProcess(
+                    file.path, [], {
                         cwd: process.cwd(),
                         env: process.env,
                         shell: true,
                         stdio: 'inherit'
-                    }).on(closeEventName, Tools.getProcessCloseHandler(
-                        resolve, (
-                            configuration.server.proxy.optional
-                        ) ? resolve : reject))
+                    })
+                for (const closeEventName:string of Tools.closeEventNames)
+                    childProcess.on(
+                        closeEventName, Tools.getProcessCloseHandler(
+                            resolve, (
+                                configuration.server.proxy.optional
+                            ) ? resolve : reject))
             }))
         await Promise.all(preRenderingPromises)
         return await PluginAPI.callStack(
