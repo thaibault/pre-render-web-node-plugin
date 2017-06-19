@@ -56,7 +56,8 @@
         "backup",
         "database",
         "log",
-        "mockup"
+        "mockup",
+        "node_modules"
       ],
       "fileBaseNames": [
         "preRender"
