@@ -18,7 +18,7 @@
     endregion
 */
 // region imports
-import {spawn as spawnChildProcess} from 'child_process'
+import {ChildProces, spawn as spawnChildProcess} from 'child_process'
 import Tools from 'clientnode'
 import type {File} from 'clientnode'
 import path from 'path'
@@ -214,16 +214,19 @@ export default class PreRender {
             preRenderingPromises.push(new Promise((
                 resolve:Function, reject:Function
             ):void => {
-                for (const closeEventName:string of Tools.closeEventNames)
-                    spawnChildProcess(file.path, [], {
+                const childProcess:ChildProcess = spawnChildProcess(
+                    file.path, [], {
                         cwd: process.cwd(),
                         env: process.env,
                         shell: true,
                         stdio: 'inherit'
-                    }).on(closeEventName, Tools.getProcessCloseHandler(
-                        resolve, (
-                            configuration.server.proxy.optional
-                        ) ? resolve : reject))
+                    })
+                for (const closeEventName:string of Tools.closeEventNames)
+                    childProcess.on(
+                        closeEventName, Tools.getProcessCloseHandler(
+                            resolve, (
+                                configuration.server.proxy.optional
+                            ) ? resolve : reject))
             }))
         await Promise.all(preRenderingPromises)
         return await PluginAPI.callStack(
