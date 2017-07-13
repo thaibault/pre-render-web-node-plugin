@@ -109,11 +109,15 @@ export default class PreRender {
                     aren't loaded.
                 */
                 for (const type:string in configuration.plugin.directories)
-                    if (configuration.plugin.directories.hasOwnProperty(
-                        type
-                    ) && path.dirname(file.path) === path.resolve(
-                        configuration.plugin.directories[type].path
-                    ) && !pluginPaths.includes(file.path))
+                    if (
+                        configuration.plugin.directories.hasOwnProperty(
+                            type
+                        ) &&
+                        path.dirname(file.path) === path.resolve(
+                            configuration.plugin.directories[type].path
+                        ) &&
+                        !pluginPaths.includes(file.path)
+                    )
                         return false
                 /*
                     NOTE: We ignore absolute defined locations and relative
@@ -138,10 +142,10 @@ export default class PreRender {
                     NOTE: Avoid to found nested folders since we will clear
                     them recursively and asynchronous.
                 */
-                if (file.stat.isDirectory(
-                ) && configuration.preRender.directoryNames.includes(
-                    file.name
-                ))
+                if (
+                    file.stat.isDirectory() &&
+                    configuration.preRender.directoryNames.includes(file.name)
+                )
                     return false
             })
         ).filter((file:File):boolean => file.stat.isDirectory(
@@ -167,11 +171,15 @@ export default class PreRender {
                     aren't loaded.
                 */
                 for (const type:string in configuration.plugin.directories)
-                    if (configuration.plugin.directories.hasOwnProperty(
-                        type
-                    ) && path.dirname(file.path) === path.resolve(
-                        configuration.plugin.directories[type].path
-                    ) && !pluginPaths.includes(file.path))
+                    if (
+                        configuration.plugin.directories.hasOwnProperty(
+                            type
+                        ) &&
+                        path.dirname(file.path) === path.resolve(
+                            configuration.plugin.directories[type].path
+                        ) &&
+                        !pluginPaths.includes(file.path)
+                    )
                         return false
                 /*
                     NOTE: We ignore absolute defined locations and relative
@@ -193,9 +201,10 @@ export default class PreRender {
                             )))
                                 return false
             })
-        ).filter((file:File):boolean => file.stat.isFile(
-        ) && configuration.preRender.fileBaseNames.includes(path.basename(
-            file.name, path.extname(file.name))))
+        ).filter((file:File):boolean =>
+            file.stat.isFile() &&
+            configuration.preRender.fileBaseNames.includes(path.basename(
+                file.name, path.extname(file.name))))
     }
     /**
      * Triggers pre-rendering.
