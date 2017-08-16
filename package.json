@@ -63,6 +63,7 @@
   },
   "webNode": {
     "preRender": {
+      "cache": false,
       "locationsToIgnore": [
         "backup",
         "database",
