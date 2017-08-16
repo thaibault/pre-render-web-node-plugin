@@ -224,7 +224,7 @@ export default class PreRender {
                 resolve:Function, reject:Function
             ):void => {
                 const childProcess:ChildProcess = spawnChildProcess(
-                    file.path, [], {
+                    file.path, [configuration.preRender.cache], {
                         cwd: process.cwd(),
                         env: process.env,
                         shell: true,
