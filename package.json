@@ -41,10 +41,10 @@
     "watch:dll": "webOptimizer build:dll --watch"
   },
   "dependencies": {
-    "clientnode": "^1.0.239"
+    "clientnode": "^1.0.240"
   },
   "peerDependencies": {
-    "web-node": "^1.0.111"
+    "web-node": "^1.0.116"
   },
   "devDependencies": {
     "babel-eslint": "^7.2.3",
@@ -57,7 +57,7 @@
     "jsdoc": "^3.5.2",
     "source-map-support": "^0.4.15",
     "web-node": "^1.0.111",
-    "weboptimizer": "^1.0.366",
+    "weboptimizer": "^1.0.368",
     "webpack": "^3.2.0",
     "webpack-dev-server": "^2.5.1"
   },
