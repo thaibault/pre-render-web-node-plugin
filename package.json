@@ -44,7 +44,7 @@
     "clientnode": "^1.0.251"
   },
   "peerDependencies": {
-    "web-node": "^1.0.116"
+    "web-node": "*"
   },
   "devDependencies": {
     "babel-eslint": "^8.0.1",
