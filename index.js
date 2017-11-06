@@ -220,11 +220,15 @@ export default class PreRender {
             await PreRender.getPrerendererFiles(configuration, plugins))
         const preRenderingPromises:Array<Promise<string>> = []
         for (const file:File of preRendererFiles)
-            preRenderingPromises.push(new Promise((
+            preRenderingPromises.push(new Promise(async (
                 resolve:Function, reject:Function
-            ):void => {
+            ):Promise<void> => {
                 const childProcess:ChildProcess = spawnChildProcess(
-                    file.path, [configuration.preRender.cache], {
+                    file.path, [configuration.preRender.cache].concat(
+                        await PluginAPI.callStack(
+                            'prePreRendererCLIParameter', plugins,
+                            configuration, [file.path])
+                    ), {
                         cwd: process.cwd(),
                         env: process.env,
                         shell: true,
