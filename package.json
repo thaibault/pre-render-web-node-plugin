@@ -41,14 +41,14 @@
     "watch:dll": "webOptimizer build:dll --watch"
   },
   "dependencies": {
-    "clientnode": "^1.0.276"
+    "clientnode": "^1.0.277"
   },
   "peerDependencies": {
     "babel-runtime": "*",
     "web-node": "*"
   },
   "devDependencies": {
-    "babel-eslint": "^8.0.1",
+    "babel-eslint": "^8.0.2",
     "documentation-website": "^1.0.72",
     "eslint": "^4.9.0",
     "eslint-config-google": "^0.9.1",
