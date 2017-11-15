@@ -33,7 +33,7 @@ import type {Configuration, Plugin, Services} from 'web-node/type'
 /**
  * Provides a pre-rendering hook for webNode applications.
  */
-export default class PreRender {
+export class PreRender {
     // region api
     /**
      * Triggered hook when at least one plugin has a new configuration file and
@@ -247,6 +247,7 @@ export default class PreRender {
     }
     // endregion
 }
+export default PreRender
 // region vim modline
 // vim: set tabstop=4 shiftwidth=4 expandtab:
 // vim: foldmethod=marker foldmarker=region,endregion:
