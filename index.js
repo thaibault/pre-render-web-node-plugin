@@ -202,7 +202,7 @@ export class PreRender {
                                 return false
             })
         ).filter((file:File):boolean =>
-            file.stat.isFile() &&
+            file.stats.isFile() &&
             configuration.preRender.fileBaseNames.includes(path.basename(
                 file.name, path.extname(file.name))))
     }
