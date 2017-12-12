@@ -231,7 +231,7 @@ export class PreRender {
                             'prePreRendererCLIParameter', plugins,
                             configuration, [file.path])
                     ), {
-                        cwd: process.cwd(),
+                        cwd: path.dirname(file.path),
                         env: process.env,
                         shell: true,
                         stdio: 'inherit'
