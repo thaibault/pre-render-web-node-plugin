@@ -143,13 +143,13 @@ export class PreRender {
                     them recursively and asynchronous.
                 */
                 if (
-                    !file.error &&
+                    file.stats &&
                     file.stats.isDirectory() &&
                     configuration.preRender.directoryNames.includes(file.name)
                 )
                     return false
             })
-        ).filter((file:File):boolean => !file.error && file.stats.isDirectory(
+        ).filter((file:File):boolean => file.stats && file.stats.isDirectory(
         ) && configuration.preRender.directoryNames.includes(file.name))
     }
     /**
@@ -203,7 +203,7 @@ export class PreRender {
                                 return false
             })
         ).filter((file:File):boolean =>
-            !file.error &&
+            file.stats &&
             file.stats.isFile() &&
             configuration.preRender.fileBaseNames.includes(path.basename(
                 file.name, path.extname(file.name))))
@@ -231,7 +231,7 @@ export class PreRender {
                             'prePreRendererCLIParameter', plugins,
                             configuration, [file.path])
                     ), {
-                        cwd: process.cwd(),
+                        cwd: path.dirname(file.path),
                         env: process.env,
                         shell: true,
                         stdio: 'inherit'
