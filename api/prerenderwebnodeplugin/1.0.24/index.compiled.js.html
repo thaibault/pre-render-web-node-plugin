@@ -161,7 +161,7 @@ try{__webpack_require__(9)}catch(error){}// endregion
                 */for(const locationToIgnore of configuration.preRender.locationsToIgnore)if(locationToIgnore.startsWith('/')){if(file.path.startsWith(_path2.default.join(configuration.context.path,locationToIgnore)))return false}else for(const pluginPath of pluginPaths)if(file.path.startsWith(_path2.default.resolve(pluginPath,locationToIgnore)))return false;/*
                     NOTE: Avoid to found nested folders since we will clear
                     them recursively and asynchronous.
-                */if(file.stat.isDirectory()&amp;&amp;configuration.preRender.directoryNames.includes(file.name))return false})).filter(function(file){return file.stat.isDirectory()&amp;&amp;configuration.preRender.directoryNames.includes(file.name)})})()}/**
+                */if(file.stats&amp;&amp;file.stats.isDirectory()&amp;&amp;configuration.preRender.directoryNames.includes(file.name))return false})).filter(function(file){return file.stats&amp;&amp;file.stats.isDirectory()&amp;&amp;configuration.preRender.directoryNames.includes(file.name)})})()}/**
      * Retrieves all files to process.
      * @param configuration - Updated configuration object.
      * @param plugins - List of all loaded plugins.
@@ -172,12 +172,12 @@ try{__webpack_require__(9)}catch(error){}// endregion
                 */for(const type in configuration.plugin.directories)if(configuration.plugin.directories.hasOwnProperty(type)&amp;&amp;_path2.default.dirname(file.path)===_path2.default.resolve(configuration.plugin.directories[type].path)&amp;&amp;!pluginPaths.includes(file.path))return false;/*
                     NOTE: We ignore absolute defined locations and relative
                     defined in each loaded plugin location.
-                */for(const locationToIgnore of configuration.preRender.locationsToIgnore)if(locationToIgnore.startsWith('/')){if(file.path.startsWith(_path2.default.join(configuration.context.path,locationToIgnore)))return false}else for(const pluginPath of pluginPaths)if(file.path.startsWith(_path2.default.resolve(pluginPath,locationToIgnore)))return false})).filter(function(file){return file.stat.isFile()&amp;&amp;configuration.preRender.fileBaseNames.includes(_path2.default.basename(file.name,_path2.default.extname(file.name)))})})()}/**
+                */for(const locationToIgnore of configuration.preRender.locationsToIgnore)if(locationToIgnore.startsWith('/')){if(file.path.startsWith(_path2.default.join(configuration.context.path,locationToIgnore)))return false}else for(const pluginPath of pluginPaths)if(file.path.startsWith(_path2.default.resolve(pluginPath,locationToIgnore)))return false})).filter(function(file){return file.stats&amp;&amp;file.stats.isFile()&amp;&amp;configuration.preRender.fileBaseNames.includes(_path2.default.basename(file.name,_path2.default.extname(file.name)))})})()}/**
      * Triggers pre-rendering.
      * @param configuration - Configuration object.
      * @param plugins - List of all loaded plugins.
      * @returns A Promise resolving to a list of prerenderer files.
-     */static render(configuration,plugins){return(0,_asyncToGenerator3.default)(function*(){const preRendererFiles=yield _pluginAPI2.default.callStack('prePreRendererRender',plugins,configuration,(yield PreRender.getPrerendererFiles(configuration,plugins)));const preRenderingPromises=[];for(const file of preRendererFiles)preRenderingPromises.push(new _promise2.default((()=>{var _ref=(0,_asyncToGenerator3.default)(function*(resolve,reject){const childProcess=(0,_child_process.spawn)(file.path,[configuration.preRender.cache].concat((yield _pluginAPI2.default.callStack('prePreRendererCLIParameter',plugins,configuration,[file.path]))),{cwd:process.cwd(),env:process.env,shell:true,stdio:'inherit'});for(const closeEventName of _clientnode2.default.closeEventNames)childProcess.on(closeEventName,_clientnode2.default.getProcessCloseHandler(resolve,configuration.server.proxy.optional?resolve:reject))});return function(_x,_x2){return _ref.apply(this,arguments)}})()));yield _promise2.default.all(preRenderingPromises);return yield _pluginAPI2.default.callStack('postPreRendererRender',plugins,configuration,preRendererFiles)})()}// endregion
+     */static render(configuration,plugins){return(0,_asyncToGenerator3.default)(function*(){const preRendererFiles=yield _pluginAPI2.default.callStack('prePreRendererRender',plugins,configuration,(yield PreRender.getPrerendererFiles(configuration,plugins)));const preRenderingPromises=[];for(const file of preRendererFiles)preRenderingPromises.push(new _promise2.default((()=>{var _ref=(0,_asyncToGenerator3.default)(function*(resolve,reject){const childProcess=(0,_child_process.spawn)(file.path,[configuration.preRender.cache].concat((yield _pluginAPI2.default.callStack('prePreRendererCLIParameter',plugins,configuration,[file.path]))),{cwd:_path2.default.dirname(file.path),env:process.env,shell:true,stdio:'inherit'});for(const closeEventName of _clientnode2.default.closeEventNames)childProcess.on(closeEventName,_clientnode2.default.getProcessCloseHandler(resolve,configuration.server.proxy.optional?resolve:reject))});return function(_x,_x2){return _ref.apply(this,arguments)}})()));yield _promise2.default.all(preRenderingPromises);return yield _pluginAPI2.default.callStack('postPreRendererRender',plugins,configuration,preRendererFiles)})()}// endregion
 }exports.PreRender=PreRender;exports.default=PreRender;// region vim modline
 // vim: set tabstop=4 shiftwidth=4 expandtab:
 // vim: foldmethod=marker foldmarker=region,endregion:
@@ -249,7 +249,7 @@ module.exports = __WEBPACK_EXTERNAL_MODULE_9__;
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on Wed Nov 22 2017 19:35:01 GMT+0100 (CET)
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on Fri Dec 15 2017 20:05:42 GMT+0100 (CET)
 </footer>
 
 <script> prettyPrint(); </script>
