@@ -212,10 +212,13 @@ export class PreRender {
      * Triggers pre-rendering.
      * @param configuration - Configuration object.
      * @param plugins - List of all loaded plugins.
+     * @param additionalCLIParameter - List of additional cli parameter to use.
      * @returns A Promise resolving to a list of prerenderer files.
      */
     static async render(
-        configuration:Configuration, plugins:Array<Plugin>
+        configuration:Configuration,
+        plugins:Array<Plugin>,
+        additionalCLIParameter:Array<any> = []
     ):Promise<Object> {
         const preRendererFiles:Array<File> = await PluginAPI.callStack(
             'prePreRendererRender', plugins, configuration,
@@ -226,10 +229,13 @@ export class PreRender {
                 resolve:Function, reject:Function
             ):Promise<void> => {
                 const childProcess:ChildProcess = spawnChildProcess(
-                    file.path, [configuration.preRender.cache].concat(
+                    file.path, [].concat(
                         await PluginAPI.callStack(
-                            'prePreRendererCLIParameter', plugins,
-                            configuration, [file.path])
+                            'prePreRendererCLIParameter',
+                            plugins,
+                            configuration,
+                            [].concat(additionalCLIParameter).concat(
+                                file.path, configuration.preRender.cache))
                     ), {
                         cwd: path.dirname(file.path),
                         env: process.env,
