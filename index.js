@@ -248,13 +248,13 @@ export class PreRender {
      * @returns A promise resolving after pre-rendering has finished.
      */
     static renderFile(
-        filePath:string, cliParameter:Array<any> = []
+        filePath:string, cliParameter:any = []
     ):Promise<void> {
         return new Promise(async (
             resolve:Function, reject:Function
         ):Promise<void> => {
             const childProcess:ChildProcess = spawnChildProcess(
-                filePath, cliParameter, {
+                filePath, [].concat(cliParameter).map(String), {
                     cwd: path.dirname(filePath),
                     env: process.env,
                     shell: true,
