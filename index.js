@@ -155,8 +155,9 @@ export class PreRender {
                 )
                     return false
             })
-        ).filter((file:File):boolean => file.stats && file.stats.isDirectory(
-        ) && configuration.preRender.directoryNames.includes(file.name))
+        ).filter((file:File):boolean => Boolean(
+            file.stats && file.stats.isDirectory(
+            ) && configuration.preRender.directoryNames.includes(file.name)))
     }
     /**
      * Retrieves all files to process.
@@ -208,11 +209,11 @@ export class PreRender {
                             )))
                                 return false
             })
-        ).filter((file:File):boolean =>
+        ).filter((file:File):boolean => Boolean(
             file.stats &&
             file.stats.isFile() &&
             configuration.preRender.fileBaseNames.includes(path.basename(
-                file.name, path.extname(file.name))))
+                file.name, path.extname(file.name)))))
     }
     /**
      * Triggers pre-rendering.
@@ -229,11 +230,10 @@ export class PreRender {
         const preRendererFiles:Array<File> = await PluginAPI.callStack(
             'prePreRendererRender', plugins, configuration,
             await PreRender.getPrerendererFiles(configuration, plugins))
-        const preRenderingPromises:Array<Promise<string>> = []
+        const preRenderingPromises:Array<Promise<void>> = []
         for (const file:File of preRendererFiles)
             preRenderingPromises.push(PreRender.renderFile(
-                file.path, configuration, plugins, [].concat(
-                await PluginAPI.callStack(
+                file.path, [].concat(await PluginAPI.callStack(
                     'prePreRendererCLIParameter', plugins, configuration,
                     [].concat(additionalCLIParameter).concat(
                         file.path, configuration.preRender.cache)))))
