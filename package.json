@@ -43,7 +43,7 @@
     "watch:dll": "webOptimizer build:dll --watch"
   },
   "dependencies": {
-    "clientnode": "^1.0.334"
+    "clientnode": "^1.0.335"
   },
   "peerDependencies": {
     "babel-runtime": "*",
@@ -63,7 +63,7 @@
     "qunit": "^2.5.0",
     "source-map-support": "^0.5.3",
     "web-node": "^1.0.149",
-    "weboptimizer": "^1.0.502",
+    "weboptimizer": "^1.0.503",
     "webpack": "^3.11.0",
     "webpack-dev-server": "^2.10.1"
   },

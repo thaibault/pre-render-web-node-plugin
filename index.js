@@ -60,7 +60,13 @@ export class PreRender {
      * @returns Given and extended object of services.
      */
     static preLoadService(services:Services):Services {
-        services.preRender = {render: PreRender.render.bind(PreRender)}
+        services.preRender = {
+            getPrerenderedDirectories:
+                PreRender.getPrerenderedDirectories.bind(PreRender),
+            getPrerendererFiles: PreRender.getPrerendererFiles.bind(PreRender),
+            render: PreRender.render.bind(PreRender),
+            renderFile: PreRender.renderFile.bind(PreRender)
+        }
         return services
     }
     /**
@@ -93,7 +99,7 @@ export class PreRender {
      * Retrieves all directories which have a pre-rendered structure.
      * @param configuration - Updated configuration object.
      * @param plugins - List of all loaded plugins.
-     * @returns A promise holding all resolved files.
+     * @returns A promise holding all resolved file objects.
      */
     static async getPrerenderedDirectories(
         configuration:Configuration, plugins:Array<Plugin>
@@ -156,7 +162,7 @@ export class PreRender {
      * Retrieves all files to process.
      * @param configuration - Updated configuration object.
      * @param plugins - List of all loaded plugins.
-     * @returns A promise holding all resolved files.
+     * @returns A promise holding all resolved file objects.
      */
     static async getPrerendererFiles(
         configuration:Configuration, plugins:Array<Plugin>
@@ -225,33 +231,39 @@ export class PreRender {
             await PreRender.getPrerendererFiles(configuration, plugins))
         const preRenderingPromises:Array<Promise<string>> = []
         for (const file:File of preRendererFiles)
-            preRenderingPromises.push(new Promise(async (
-                resolve:Function, reject:Function
-            ):Promise<void> => {
-                const childProcess:ChildProcess = spawnChildProcess(
-                    file.path, [].concat(
-                        await PluginAPI.callStack(
-                            'prePreRendererCLIParameter',
-                            plugins,
-                            configuration,
-                            [].concat(additionalCLIParameter).concat(
-                                file.path, configuration.preRender.cache))
-                    ), {
-                        cwd: path.dirname(file.path),
-                        env: process.env,
-                        shell: true,
-                        stdio: 'inherit'
-                    })
-                for (const closeEventName:string of Tools.closeEventNames)
-                    childProcess.on(
-                        closeEventName, Tools.getProcessCloseHandler(
-                            resolve, (
-                                configuration.server.proxy.optional
-                            ) ? resolve : reject))
-            }))
+            preRenderingPromises.push(PreRender.renderFile(
+                file.path, configuration, plugins, [].concat(
+                await PluginAPI.callStack(
+                    'prePreRendererCLIParameter', plugins, configuration,
+                    [].concat(additionalCLIParameter).concat(
+                        file.path, configuration.preRender.cache)))))
         await Promise.all(preRenderingPromises)
         return await PluginAPI.callStack(
             'postPreRendererRender', plugins, configuration, preRendererFiles)
+    }
+    /**
+     * Executes given pre-renderer file.
+     * @param filePath - File path to execute as pre-renderer.
+     * @param cliParameter - List of cli parameter to use.
+     * @returns A promise resolving after pre-rendering has finished.
+     */
+    static renderFile(
+        filePath:string, cliParameter:Array<any> = []
+    ):Promise<void> {
+        return new Promise(async (
+            resolve:Function, reject:Function
+        ):Promise<void> => {
+            const childProcess:ChildProcess = spawnChildProcess(
+                filePath, cliParameter, {
+                    cwd: path.dirname(filePath),
+                    env: process.env,
+                    shell: true,
+                    stdio: 'inherit'
+                })
+            for (const closeEventName:string of Tools.closeEventNames)
+                childProcess.on(closeEventName, Tools.getProcessCloseHandler(
+                    resolve, reject))
+        })
     }
     // endregion
 }
