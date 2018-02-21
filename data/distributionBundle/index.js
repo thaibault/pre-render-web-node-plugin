@@ -60,7 +60,13 @@ export class PreRender {
      * @returns Given and extended object of services.
      */
     static preLoadService(services:Services):Services {
-        services.preRender = {render: PreRender.render.bind(PreRender)}
+        services.preRender = {
+            getPrerenderedDirectories:
+                PreRender.getPrerenderedDirectories.bind(PreRender),
+            getPrerendererFiles: PreRender.getPrerendererFiles.bind(PreRender),
+            render: PreRender.render.bind(PreRender),
+            renderFile: PreRender.renderFile.bind(PreRender)
+        }
         return services
     }
     /**
@@ -93,7 +99,7 @@ export class PreRender {
      * Retrieves all directories which have a pre-rendered structure.
      * @param configuration - Updated configuration object.
      * @param plugins - List of all loaded plugins.
-     * @returns A promise holding all resolved files.
+     * @returns A promise holding all resolved file objects.
      */
     static async getPrerenderedDirectories(
         configuration:Configuration, plugins:Array<Plugin>
@@ -149,14 +155,15 @@ export class PreRender {
                 )
                     return false
             })
-        ).filter((file:File):boolean => file.stats && file.stats.isDirectory(
-        ) && configuration.preRender.directoryNames.includes(file.name))
+        ).filter((file:File):boolean => Boolean(
+            file.stats && file.stats.isDirectory(
+            ) && configuration.preRender.directoryNames.includes(file.name)))
     }
     /**
      * Retrieves all files to process.
      * @param configuration - Updated configuration object.
      * @param plugins - List of all loaded plugins.
-     * @returns A promise holding all resolved files.
+     * @returns A promise holding all resolved file objects.
      */
     static async getPrerendererFiles(
         configuration:Configuration, plugins:Array<Plugin>
@@ -202,50 +209,61 @@ export class PreRender {
                             )))
                                 return false
             })
-        ).filter((file:File):boolean =>
+        ).filter((file:File):boolean => Boolean(
             file.stats &&
             file.stats.isFile() &&
             configuration.preRender.fileBaseNames.includes(path.basename(
-                file.name, path.extname(file.name))))
+                file.name, path.extname(file.name)))))
     }
     /**
      * Triggers pre-rendering.
      * @param configuration - Configuration object.
      * @param plugins - List of all loaded plugins.
+     * @param additionalCLIParameter - List of additional cli parameter to use.
      * @returns A Promise resolving to a list of prerenderer files.
      */
     static async render(
-        configuration:Configuration, plugins:Array<Plugin>
+        configuration:Configuration,
+        plugins:Array<Plugin>,
+        additionalCLIParameter:Array<any> = []
     ):Promise<Object> {
         const preRendererFiles:Array<File> = await PluginAPI.callStack(
             'prePreRendererRender', plugins, configuration,
             await PreRender.getPrerendererFiles(configuration, plugins))
-        const preRenderingPromises:Array<Promise<string>> = []
+        const preRenderingPromises:Array<Promise<void>> = []
         for (const file:File of preRendererFiles)
-            preRenderingPromises.push(new Promise(async (
-                resolve:Function, reject:Function
-            ):Promise<void> => {
-                const childProcess:ChildProcess = spawnChildProcess(
-                    file.path, [configuration.preRender.cache].concat(
-                        await PluginAPI.callStack(
-                            'prePreRendererCLIParameter', plugins,
-                            configuration, [file.path])
-                    ), {
-                        cwd: path.dirname(file.path),
-                        env: process.env,
-                        shell: true,
-                        stdio: 'inherit'
-                    })
-                for (const closeEventName:string of Tools.closeEventNames)
-                    childProcess.on(
-                        closeEventName, Tools.getProcessCloseHandler(
-                            resolve, (
-                                configuration.server.proxy.optional
-                            ) ? resolve : reject))
-            }))
+            preRenderingPromises.push(PreRender.renderFile(
+                file.path, [].concat(await PluginAPI.callStack(
+                    'prePreRendererCLIParameter', plugins, configuration,
+                    [].concat(additionalCLIParameter).concat(
+                        file.path, configuration.preRender.cache)))))
         await Promise.all(preRenderingPromises)
         return await PluginAPI.callStack(
             'postPreRendererRender', plugins, configuration, preRendererFiles)
+    }
+    /**
+     * Executes given pre-renderer file.
+     * @param filePath - File path to execute as pre-renderer.
+     * @param cliParameter - List of cli parameter to use.
+     * @returns A promise resolving after pre-rendering has finished.
+     */
+    static renderFile(
+        filePath:string, cliParameter:any = []
+    ):Promise<void> {
+        return new Promise(async (
+            resolve:Function, reject:Function
+        ):Promise<void> => {
+            const childProcess:ChildProcess = spawnChildProcess(
+                filePath, [].concat(cliParameter).map(String), {
+                    cwd: path.dirname(filePath),
+                    env: process.env,
+                    shell: true,
+                    stdio: 'inherit'
+                })
+            for (const closeEventName:string of Tools.closeEventNames)
+                childProcess.on(closeEventName, Tools.getProcessCloseHandler(
+                    resolve, reject))
+        })
     }
     // endregion
 }
