@@ -23,10 +23,6 @@ import Tools from 'clientnode'
 import type {File} from 'clientnode'
 import path from 'path'
 import removeDirectoryRecursively from 'rimraf'
-// NOTE: Only needed for debugging this file.
-try {
-    require('source-map-support/register')
-} catch (error) {}
 import PluginAPI from 'web-node/pluginAPI'
 import type {Configuration, Plugin, Services} from 'web-node/type'
 // endregion

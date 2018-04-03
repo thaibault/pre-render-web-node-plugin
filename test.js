@@ -20,10 +20,6 @@ import Tools from 'clientnode'
 import fileSystem from 'fs'
 import path from 'path'
 import registerTest from 'clientnode/test'
-// NOTE: Only needed for debugging this file.
-try {
-    module.require('source-map-support/register')
-} catch (error) {}
 import baseConfiguration from 'web-node/configurator'
 import type {Configuration} from 'web-node/type'
 
