@@ -41,7 +41,7 @@
     "watch": "webOptimizer build --watch"
   },
   "dependencies": {
-    "clientnode": "^3.0.72"
+    "clientnode": "^3.0.78"
   },
   "peerDependencies": {
     "babel-runtime": "*",
@@ -57,12 +57,12 @@
     "eslint-plugin-jsdoc": "^3.7.1",
     "flow-bin": "^0.78.0",
     "jsdoc": "^3.5.2",
-    "nyc": "^11.9.0",
+    "nyc": "^12.0.2",
     "qunit": "^2.6.1",
-    "web-node": "^1.0.189",
-    "weboptimizer": "^2.0.177",
+    "web-node": "^1.0.190",
+    "weboptimizer": "^2.0.181",
     "webpack": "^4.16.5",
-    "webpack-cli": "^2.1.5",
+    "webpack-cli": "^3.1.0",
     "webpack-dev-server": "^3.1.5"
   },
   "webNode": {
@@ -92,13 +92,6 @@
         "clientnode/test$": "clientnode/test.compiled",
         "web-node/configurator$": "web-node/configurator.compiled",
         "web-node/pluginAPI$": "web-node/pluginAPI.compiled"
-      },
-      "optimizer": {
-        "babelMinify": {
-          "module": {
-            "mangle": false
-          }
-        }
       }
     },
     "targetTechnology": "node"
