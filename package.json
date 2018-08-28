@@ -3,7 +3,7 @@
   "version": "1.0.81",
   "license": "CC-BY-3.0",
   "description": "Pre-rendering hook for webNode applications.",
-  "homepage": "http://torben.website/preRenderWebNodePlugin",
+  "homepage": "https://torben.website/preRenderWebNodePlugin",
   "documentationWebsite": {
     "name": "preRenderWebNodePlugin",
     "trackingCode": "UA-40192634-28"
@@ -41,29 +41,29 @@
     "watch": "webOptimizer build --watch"
   },
   "dependencies": {
-    "clientnode": "^3.0.86"
+    "clientnode": "*"
   },
   "peerDependencies": {
-    "babel-runtime": "*",
+    "@babel/runtime": "*",
     "web-node": "*"
   },
   "devDependencies": {
-    "babel-eslint": "^8.2.6",
-    "coveralls": "^3.0.2",
-    "documentation-website": "^1.0.137",
-    "eslint": "^5.4.0",
-    "eslint-config-google": "^0.9.1",
-    "eslint-plugin-flowtype": "^2.50.0",
-    "eslint-plugin-jsdoc": "^3.7.1",
-    "flow-bin": "^0.79.1",
-    "jsdoc": "^3.5.2",
-    "nyc": "^12.0.2",
-    "qunit": "^2.6.2",
-    "web-node": "^1.0.197",
-    "weboptimizer": "^2.0.190",
-    "webpack": "^4.17.0",
-    "webpack-cli": "^3.1.0",
-    "webpack-dev-server": "^3.1.5"
+    "babel-eslint": "*",
+    "coveralls": "*",
+    "documentation-website": "*",
+    "eslint": "*",
+    "eslint-config-google": "*",
+    "eslint-plugin-flowtype": "*",
+    "eslint-plugin-jsdoc": "*",
+    "flow-bin": "*",
+    "jsdoc": "*",
+    "nyc": "*",
+    "qunit": "*",
+    "web-node": "*",
+    "weboptimizer": "*",
+    "webpack": "*",
+    "webpack-cli": "*",
+    "webpack-dev-server": "*"
   },
   "webNode": {
     "preRender": {
