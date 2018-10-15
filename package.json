@@ -1,6 +1,6 @@
 {
   "name": "prerenderwebnodeplugin",
-  "version": "1.0.91",
+  "version": "1.0.92",
   "license": "CC-BY-3.0",
   "description": "Pre-rendering hook for webNode applications.",
   "homepage": "https://torben.website/preRenderWebNodePlugin",
