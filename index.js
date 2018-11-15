@@ -230,7 +230,9 @@ export class PreRender {
         for (const file:File of preRendererFiles)
             preRenderingPromises.push(PreRender.renderFile(
                 file.path, [].concat(await PluginAPI.callStack(
-                    'prePreRendererCLIParameter', plugins, configuration,
+                    'prePreRendererCLIParameter',
+                    plugins,
+                    configuration,
                     [].concat(additionalCLIParameter).concat(
                         file.path, configuration.preRender.cache)))))
         await Promise.all(preRenderingPromises)
@@ -250,7 +252,8 @@ export class PreRender {
             resolve:Function, reject:Function
         ):Promise<void> => {
             const childProcess:ChildProcess = spawnChildProcess(
-                filePath, [].concat(cliParameter).map(String), {
+                filePath,
+                [].concat(cliParameter).map(String), {
                     cwd: path.dirname(filePath),
                     env: process.env,
                     shell: true,
