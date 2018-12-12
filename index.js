@@ -234,7 +234,9 @@ export class PreRender {
                     plugins,
                     configuration,
                     [].concat(additionalCLIParameter).concat(
-                        file.path, configuration.preRender.cache)))))
+                        file.path, configuration.preRender.cache)
+                ))
+            ))
         await Promise.all(preRenderingPromises)
         return await PluginAPI.callStack(
             'postPreRendererRender', plugins, configuration, preRendererFiles)
