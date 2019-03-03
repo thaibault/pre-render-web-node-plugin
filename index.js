@@ -23,7 +23,7 @@ import Tools from 'clientnode'
 import type {File} from 'clientnode'
 import path from 'path'
 import removeDirectoryRecursively from 'rimraf'
-import PluginAPI from 'web-node/pluginAPI'
+import {PluginAPI} from 'web-node'
 import type {Configuration, Plugin, Services} from 'web-node/type'
 // endregion
 /**

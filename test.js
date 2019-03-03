@@ -20,7 +20,7 @@ import Tools from 'clientnode'
 import fileSystem from 'fs'
 import path from 'path'
 import registerTest from 'clientnode/test'
-import baseConfiguration from 'web-node/configurator'
+import {configuration as baseConfiguration} from 'web-node'
 import type {Configuration} from 'web-node/type'
 
 import Index from './index'
