@@ -82,18 +82,6 @@
     }
   },
   "webOptimizer": {
-    "files": {
-      "compose": {
-        "cascadingStyleSheet": null
-      }
-    },
-    "module": {
-      "aliases": {
-        "clientnode/test$": "clientnode/test.compiled",
-        "web-node/configurator$": "web-node/configurator.compiled",
-        "web-node/pluginAPI$": "web-node/pluginAPI.compiled"
-      }
-    },
     "targetTechnology": "node"
   }
 }
