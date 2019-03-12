@@ -224,12 +224,16 @@ export class PreRender {
         additionalCLIParameter:Array<any> = []
     ):Promise<Object> {
         const preRendererFiles:Array<File> = await PluginAPI.callStack(
-            'prePreRendererRender', plugins, configuration,
-            await PreRender.getPrerendererFiles(configuration, plugins))
+            'prePreRendererRender',
+            plugins,
+            configuration,
+            await PreRender.getPrerendererFiles(configuration, plugins)
+        )
         const preRenderingPromises:Array<Promise<void>> = []
         for (const file:File of preRendererFiles)
             preRenderingPromises.push(PreRender.renderFile(
-                file.path, [].concat(await PluginAPI.callStack(
+                file.path,
+                [].concat(await PluginAPI.callStack(
                     'prePreRendererCLIParameter',
                     plugins,
                     configuration,
@@ -247,9 +251,7 @@ export class PreRender {
      * @param cliParameter - List of cli parameter to use.
      * @returns A promise resolving after pre-rendering has finished.
      */
-    static renderFile(
-        filePath:string, cliParameter:any = []
-    ):Promise<void> {
+    static renderFile(filePath:string, cliParameter:any = []):Promise<void> {
         return new Promise(async (
             resolve:Function, reject:Function
         ):Promise<void> => {
