@@ -81,6 +81,7 @@
       "renderAfterConfigurationUpdates": false
     }
   },
+  "sideEffects": false,
   "webOptimizer": {
     "targetTechnology": "node"
   }
