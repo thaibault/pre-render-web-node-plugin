@@ -29,7 +29,7 @@ import type {Configuration, Plugin, Services} from 'web-node/type'
 /**
  * Provides a pre-rendering hook for webNode applications.
  */
-export class PreRender {
+export class PreRender implements PluginHandler {
     // region api
     /**
      * Triggered hook when at least one plugin has a new configuration file and
