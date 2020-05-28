@@ -1,4 +1,3 @@
-// @flow
 // #!/usr/bin/env node
 // -*- coding: utf-8 -*-
 /** @module preRenderWebNodePlugin */
@@ -19,12 +18,14 @@
 */
 // region imports
 import {ChildProcess, spawn as spawnChildProcess} from 'child_process'
-import Tools from 'clientnode'
-import type {File} from 'clientnode'
+import Tools, {CloseEventNames} from 'clientnode'
+import {File} from 'clientnode/type'
 import path from 'path'
 import removeDirectoryRecursively from 'rimraf'
 import {PluginAPI} from 'web-node'
-import type {Configuration, Plugin, Services} from 'web-node/type'
+import {Plugin, PluginHandler} from 'web-node/type'
+
+import {Configuration, Services} from './type'
 // endregion
 /**
  * Provides a pre-rendering hook for webNode applications.
@@ -37,14 +38,13 @@ export class PreRender implements PluginHandler {
      * @param configuration - Updated configuration object.
      * @param pluginsWithChangedConfiguration - List of plugins which have a
      * changed plugin configuration.
-     * @param oldConfiguration - Old configuration object.
      * @param plugins - List of all loaded plugins.
      * @returns New configuration object to use.
      */
     static async postConfigurationLoaded(
         configuration:Configuration,
         pluginsWithChangedConfiguration:Array<Plugin>,
-        oldConfiguration:Configuration, plugins:Array<Plugin>
+        plugins:Array<Plugin>
     ):Promise<Configuration> {
         if (configuration.preRender.renderAfterConfigurationUpdates)
             PreRender.render(configuration, plugins)
@@ -76,21 +76,58 @@ export class PreRender implements PluginHandler {
         services:Services, configuration:Configuration, plugins:Array<Plugin>
     ):Promise<Services> {
         const preRenderOutputRemoveingPromises:Array<Promise<string>> = []
-        for (const file:File of await PreRender.getPrerenderedDirectories(
+        for (const file of await PreRender.getPrerenderedDirectories(
             configuration, plugins
         ))
             preRenderOutputRemoveingPromises.push(new Promise((
                 resolve:Function, reject:Function
-            ):void => removeDirectoryRecursively(file.path, {glob: false}, (
-                error:?Error
-            ):void => error ? reject(
-                error
-            ) : resolve())))
+            ):void =>
+                removeDirectoryRecursively(
+                    file.path,
+                    {glob: false},
+                    (error:Error|undefined):void =>
+                        error ? reject(error) : resolve()
+                )
+            ))
         await Promise.all(preRenderOutputRemoveingPromises)
         return services
     }
     // endregion
     // region helper
+    // TODO maybe extract this to webnode
+    static isFilePathInActivePlugin(
+        filePath:string, configuration:Configuration
+    ):boolean {
+        for (const directory of Object.values(
+            configuration.plugin.directories
+        ))
+            if (
+                path.dirname(file.path) ===
+                    path.resolve(directory.path) &&
+                !pluginPaths.includes(file.path)
+            )
+                return false
+        return true
+    }
+    static isFilePathInPluginLocation(
+        filePath:string, configuration:Configuration, locations:Array<string>
+    ):boolean {
+        for (
+            const location of configuration.preRender.locations.executer.exclude
+        )
+            if (location.startsWith('/')) {
+                if (file.path.startsWith(
+                    path.join(configuration.context.path, location)
+                ))
+                    return false
+            } else
+                for (const pluginPath of pluginPaths)
+                    if (file.path.startsWith(
+                        path.resolve(pluginPath, location)
+                    ))
+                        return false
+        return true
+    }
     /**
      * Retrieves all directories which have a pre-rendered structure.
      * @param configuration - Updated configuration object.
@@ -101,59 +138,41 @@ export class PreRender implements PluginHandler {
         configuration:Configuration, plugins:Array<Plugin>
     ):Promise<Array<File>> {
         const pluginPaths:Array<string> = plugins.map((plugin:Plugin):string =>
-            plugin.path)
+            plugin.path
+        )
         return (await Tools.walkDirectoryRecursively(
-            configuration.context.path, (file:File):?false => {
+            configuration.context.path, (file:File):false|void => {
                 if (file.name.startsWith('.'))
                     return false
-                /*
-                    NOTE: We want to ignore all known plugin locations which
-                    aren't loaded.
-                */
-                for (const type:string in configuration.plugin.directories)
-                    if (
-                        configuration.plugin.directories.hasOwnProperty(
-                            type
-                        ) &&
-                        path.dirname(file.path) === path.resolve(
-                            configuration.plugin.directories[type].path
-                        ) &&
-                        !pluginPaths.includes(file.path)
-                    )
-                        return false
+                if (!PreRender.isFilePathInActivePlugin(file.path))
+                    return false
                 /*
                     NOTE: We ignore absolute defined locations and relative
                     defined in each loaded plugin location.
                 */
                 for (
-                    const locationToIgnore:string of
-                    configuration.preRender.locationsToIgnore
+                    const location of
+                        configuration.preRender.locations.output.exclude
                 )
-                    if (locationToIgnore.startsWith('/')) {
-                        if (file.path.startsWith(path.join(
-                            configuration.context.path, locationToIgnore
-                        )))
+                    if (location.startsWith('/')) {
+                        if (file.path.startsWith(
+                            path.join(configuration.context.path, location)
+                        ))
                             return false
                     } else
-                        for (const pluginPath:string of pluginPaths)
-                            if (file.path.startsWith(path.resolve(
-                                pluginPath, locationToIgnore
-                            )))
+                        for (const pluginPath of pluginPaths)
+                            if (file.path.startsWith(
+                                path.resolve(pluginPath, location)
+                            ))
                                 return false
-                /*
-                    NOTE: Avoid to found nested folders since we will clear
-                    them recursively and asynchronous.
-                */
-                if (
-                    file.stats &&
-                    file.stats.isDirectory() &&
-                    configuration.preRender.directoryNames.includes(file.name)
-                )
-                    return false
             })
         ).filter((file:File):boolean => Boolean(
-            file.stats && file.stats.isDirectory(
-            ) && configuration.preRender.directoryNames.includes(file.name)))
+            file.stats &&
+            file.stats.isDirectory() &&
+            configuration.preRender.locations.output.include.includes(
+                file.name
+            )
+        ))
     }
     /**
      * Retrieves all files to process.
@@ -165,51 +184,51 @@ export class PreRender implements PluginHandler {
         configuration:Configuration, plugins:Array<Plugin>
     ):Promise<Array<File>> {
         const pluginPaths:Array<string> = plugins.map((plugin:Plugin):string =>
-            plugin.path)
-        return (await Tools.walkDirectoryRecursively(
-            configuration.context.path, (file:File):?false => {
-                if (file.name.startsWith('.'))
-                    return false
-                /*
-                    NOTE: We want to ignore all known plugin locations which
-                    aren't loaded.
-                */
-                for (const type:string in configuration.plugin.directories)
-                    if (
-                        configuration.plugin.directories.hasOwnProperty(
-                            type
-                        ) &&
-                        path.dirname(file.path) === path.resolve(
-                            configuration.plugin.directories[type].path
-                        ) &&
-                        !pluginPaths.includes(file.path)
-                    )
+            plugin.path
+        )
+        const locationToSearch:Array<string> =
+            configuration.preRender.locations.executer.include.length ?
+                configuration.preRender.locations.executer.include.map((
+                    location:string
+                ):string => path.join(configuration.context.path, location)) :
+                [configuration.context.path]
+        const result:Array<File> = []
+        for (const location of locationToSearch)
+            result.concat((await Tools.walkDirectoryRecursively(
+                location,
+                (file:File):false|void => {
+                    if (file.name.startsWith('.'))
                         return false
-                /*
-                    NOTE: We ignore absolute defined locations and relative
-                    defined in each loaded plugin location.
-                */
-                for (
-                    const locationToIgnore:string of
-                    configuration.preRender.locationsToIgnore
-                )
-                    if (locationToIgnore.startsWith('/')) {
-                        if (file.path.startsWith(path.join(
-                            configuration.context.path, locationToIgnore
-                        )))
-                            return false
-                    } else
-                        for (const pluginPath:string of pluginPaths)
-                            if (file.path.startsWith(path.resolve(
-                                pluginPath, locationToIgnore
-                            )))
+                    if (!PreRender.isFilePathInActivePlugin(file.path))
+                        return false
+                    /*
+                        NOTE: We ignore absolute defined locations and relative
+                        defined in each loaded plugin location.
+                    */
+                    for (
+                        const location of
+                            configuration.preRender.locations.executer.exclude
+                    )
+                        if (location.startsWith('/')) {
+                            if (file.path.startsWith(
+                                path.join(configuration.context.path, location)
+                            ))
                                 return false
-            })
-        ).filter((file:File):boolean => Boolean(
-            file.stats &&
-            file.stats.isFile() &&
-            configuration.preRender.fileBaseNames.includes(path.basename(
-                file.name, path.extname(file.name)))))
+                        } else
+                            for (const pluginPath of pluginPaths)
+                                if (file.path.startsWith(
+                                    path.resolve(pluginPath, location)
+                                ))
+                                    return false
+                })
+            ).filter((file:File):boolean => Boolean(
+                file.stats &&
+                file.stats.isFile() &&
+                configuration.preRender.fileBaseNames.includes(path.basename(
+                    file.name, path.extname(file.name)
+                ))
+            )))
+        return result
     }
     /**
      * Triggers pre-rendering.
@@ -221,8 +240,8 @@ export class PreRender implements PluginHandler {
     static async render(
         configuration:Configuration,
         plugins:Array<Plugin>,
-        additionalCLIParameter:Array<any> = []
-    ):Promise<Object> {
+        additionalCLIParameter:Array<string> = []
+    ):Promise<Array<File>> {
         const preRendererFiles:Array<File> = await PluginAPI.callStack(
             'prePreRendererRender',
             plugins,
@@ -230,7 +249,7 @@ export class PreRender implements PluginHandler {
             await PreRender.getPrerendererFiles(configuration, plugins)
         )
         const preRenderingPromises:Array<Promise<void>> = []
-        for (const file:File of preRendererFiles)
+        for (const file of preRendererFiles)
             preRenderingPromises.push(PreRender.renderFile(
                 file.path,
                 [].concat(await PluginAPI.callStack(
@@ -238,12 +257,14 @@ export class PreRender implements PluginHandler {
                     plugins,
                     configuration,
                     [].concat(additionalCLIParameter).concat(
-                        file.path, configuration.preRender.cache)
+                        file.path, configuration.preRender.cache
+                    )
                 ))
             ))
         await Promise.all(preRenderingPromises)
         return await PluginAPI.callStack(
-            'postPreRendererRender', plugins, configuration, preRendererFiles)
+            'postPreRendererRender', plugins, configuration, preRendererFiles
+        )
     }
     /**
      * Executes given pre-renderer file.
@@ -251,21 +272,27 @@ export class PreRender implements PluginHandler {
      * @param cliParameter - List of cli parameter to use.
      * @returns A promise resolving after pre-rendering has finished.
      */
-    static renderFile(filePath:string, cliParameter:any = []):Promise<void> {
+    static renderFile(
+        filePath:string, cliParameter:Array<string> = []
+    ):Promise<void> {
         return new Promise(async (
             resolve:Function, reject:Function
         ):Promise<void> => {
             const childProcess:ChildProcess = spawnChildProcess(
                 filePath,
-                [].concat(cliParameter).map(String), {
+                cliParameter,
+                {
                     cwd: path.dirname(filePath),
                     env: process.env,
                     shell: true,
                     stdio: 'inherit'
-                })
-            for (const closeEventName:string of Tools.closeEventNames)
-                childProcess.on(closeEventName, Tools.getProcessCloseHandler(
-                    resolve, reject))
+                }
+            )
+            for (const closeEventName:string of CloseEventNames)
+                childProcess.on(
+                    closeEventName,
+                    Tools.getProcessCloseHandler(resolve, reject)
+                )
         })
     }
     // endregion

@@ -46,6 +46,7 @@
     "@types/jest": "*",
     "@types/loader-utils": "*",
     "@types/node": "*",
+    "@types/rimraf": "*",
     "@typescript-eslint/eslint-plugin": "*",
     "@typescript-eslint/parser": "*",
     "babel-eslint": "*",
@@ -71,13 +72,22 @@
   "webNode": {
     "preRender": {
       "cache": false,
-      "locationsToIgnore": [
-        "backup",
-        "database",
-        "log",
-        "mockup",
-        "node_modules"
-      ],
+      "locations": {
+        "executer": {
+          "exclude": [
+            "backup",
+            "database",
+            "log",
+            "mockup",
+            "node_modules"
+          ],
+          "include": []
+        },
+        "output": {
+          "exclude": [],
+          "include": ["preRendered"]
+        }
+      },
       "fileBaseNames": [
         "preRender"
       ],
