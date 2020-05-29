@@ -15,19 +15,28 @@
     endregion
 */
 // region imports
-import type {PlainObject} from 'clientnode'
 import Tools from 'clientnode'
-import fileSystem from 'fs'
-import path from 'path'
-import registerTest from 'clientnode/test'
-import {configuration as baseConfiguration} from 'web-node'
-import type {Configuration} from 'web-node/type'
+import {configuration as baseConfiguration, PluginAPI} from 'web-node'
 
-import Index from './index'
+import PreRender from './index'
+import packageConfiguration from './package.json'
+import {Configuration} from './type'
 // endregion
-registerTest(async function():Promise<void> {
+describe('preRender', ():void => {
+    // region mockup
+    let configuration:Configuration
+    beforeAll(async ():Promise<void> => {
+        configuration = Tools.extend(
+            true,
+            (await PluginAPI.loadAll(baseConfiguration)) as
+                unknown as
+                Configuration,
+            {template: packageConfiguration.webNode.preRender}
+        )
+    })
+    // endregion
     // TODO
-}, 'plain')
+})
 // region vim modline
 // vim: set tabstop=4 shiftwidth=4 expandtab:
 // vim: foldmethod=marker foldmarker=region,endregion:

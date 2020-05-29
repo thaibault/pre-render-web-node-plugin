@@ -8915,9 +8915,9 @@ wbuf@^1.1.0, wbuf@^1.7.3:
     minimalistic-assert "^1.0.0"
 
 web-node@*:
-  version "1.0.329"
-  resolved "https://registry.yarnpkg.com/web-node/-/web-node-1.0.329.tgz#ad694b6edf885b7bc6ed018945d88a2c8d2b5ec6"
-  integrity sha512-jYPLfftZjubukMDdaOwWAfM1LtAgE3skhvxbFwHJ/hyw46PVPDxwoj21t0oXDuFnHvjOFLgNwJ3uuaAnUeHZvw==
+  version "1.0.330"
+  resolved "https://registry.yarnpkg.com/web-node/-/web-node-1.0.330.tgz#0215ceac51c2d7d46c75f4b1bd128204c7112bd7"
+  integrity sha512-nPyEF9Xpyd5P/890TyQlhNoeZd8wps70VWhx7fP8JEYXcoTPiw89xdqrgHitBO38Yqm5d8DMt7J8AwunrXiVyA==
 
 webidl-conversions@^5.0.0:
   version "5.0.0"

@@ -79,22 +79,21 @@
             "database",
             "log",
             "mockup",
-            "node_modules"
+            "node_modules",
+            "src",
+            "source"
           ],
+          "fileNames": "preRender.js",
           "include": []
         },
         "output": {
-          "exclude": [],
-          "include": ["preRendered"]
+          "directoryNames": "preRendered",
+          "exclude": []
         }
       },
-      "fileBaseNames": [
-        "preRender"
-      ],
       "renderAfterConfigurationUpdates": false
     }
   },
-  "sideEffects": false,
   "webOptimizer": {
     "targetTechnology": "node"
   }

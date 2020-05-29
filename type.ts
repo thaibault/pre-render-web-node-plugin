@@ -14,7 +14,7 @@
     endregion
 */
 // region imports
-import {File} from 'clientnode/type'
+import {File, ProcessCloseReason} from 'clientnode/type'
 import {
     Configuration as BaseConfiguration,
     Plugin,
@@ -23,34 +23,37 @@ import {
 } from 'web-node/type'
 // endregion
 // region exports
-export type FileSearchConfiguration = {
-    exclude:Array<string>;
-    include:Array<string>;
-}
 export type Configuration = BaseConfiguration & {
     preRender:{
         cache:boolean;
-        fileBaseNames:Array<string>;
         locations:{
-            executer:FileSearchConfiguration;
-            output:FileSearchConfiguration;
+            executer:{
+                exclude:Array<string>|string;
+                include:Array<string>|string;
+                fileNames:Array<string>|string;
+            };
+            output:{
+                directoryNames:Array<string>|string;
+                exclude:Array<string>|string;
+            };
         };
         renderAfterConfigurationUpdates:boolean;
     };
 }
 export type Services = BaseServices & {preRender:{
-    getPrerenderedDirectories:(
+    getPrerenderedOutputDirectories:(
         configuration:Configuration, plugins:Array<Plugin>
     ) => Promise<Array<File>>;
-    getPrerendererFiles:(
+    getPrerendererExecuter:(
         configuration:Configuration, plugins:Array<Plugin>
     ) => Promise<Array<File>>;
     render:(
         configuration:Configuration,
         plugins:Array<Plugin>,
-        additionalCLIParameter?:Array<string>
+        additionalCLIParameter?:Array<string>|string
     ) => Promise<Array<File>>;
-    renderFile:(filePath:string, cliParameter?:Array<string>) => Promise<void>;
+    renderFile:(filePath:string, cliParameter?:Array<string>) =>
+        Promise<ProcessCloseReason>;
 }}
 export interface PluginHandler extends BasePluginHandler {
     /**
