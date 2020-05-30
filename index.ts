@@ -208,9 +208,11 @@ export class PreRender implements PluginHandler {
                     'prePreRendererCLIParameter',
                     plugins,
                     configuration,
-                    ([] as Array<string>)
-                        .concat(additionalCLIParameter)
-                        .concat(file.path, `${configuration.preRender.cache}`)
+                    ([] as Array<string>).concat(
+                        additionalCLIParameter,
+                        `${configuration.preRender.cache}`
+                    ),
+                    file
                 ))
             ))
         await Promise.all(preRenderingPromises)
