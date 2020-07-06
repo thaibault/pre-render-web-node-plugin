@@ -29,13 +29,22 @@ describe('preRender', ():void => {
         configuration = Tools.extend(
             true,
             (await PluginAPI.loadAll(baseConfiguration)) as
-                unknown as
-                Configuration,
+                unknown as Configuration,
             {template: packageConfiguration.webNode.preRender}
         )
     })
     // endregion
-    // TODO
+    test('postConfigurationLoaded', async ():Promise<void> => {
+        const testConfiguration:Configuration = Tools.extend(
+            true,
+            {},
+            configuration,
+            {preRender: {renderAfterConfigurationUpdates: false}}
+        )
+        expect(PreRender.postConfigurationLoaded(testConfiguration, [], []))
+            .resolves.toStrictEqual(testConfiguration)
+    })
+    // TODO test all methods
 })
 // region vim modline
 // vim: set tabstop=4 shiftwidth=4 expandtab:
