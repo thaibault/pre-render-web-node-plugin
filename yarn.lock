@@ -3083,9 +3083,9 @@ clean-css@^4.2.1, clean-css@^4.2.3:
     source-map "~0.6.0"
 
 clientnode@*:
-  version "3.0.470"
-  resolved "https://registry.yarnpkg.com/clientnode/-/clientnode-3.0.470.tgz#1dae19810fefc153acc9433840cd186338f5d098"
-  integrity sha512-JBTEr01tdFCE+MvSAuMynZMMIETVO7xlEAMwD63kxTjTXGnMoVCZ3mYkrLqB7bAiaZlvICzdMx1VC++3/O5m0w==
+  version "3.0.471"
+  resolved "https://registry.yarnpkg.com/clientnode/-/clientnode-3.0.471.tgz#2f2401ff90309e1ce9d54e8d66039523cdb5625e"
+  integrity sha512-hP0yHUI/RlqzbfihXvBCflRkzolaSLVyMrlT4hiKFRydm5N55VaflgemvRDFHQvR1Ow28sGu0QvU7r7sESxgFg==
 
 cliui@^5.0.0:
   version "5.0.0"
@@ -8749,9 +8749,9 @@ wbuf@^1.1.0, wbuf@^1.7.3:
     minimalistic-assert "^1.0.0"
 
 web-node@*:
-  version "1.0.339"
-  resolved "https://registry.yarnpkg.com/web-node/-/web-node-1.0.339.tgz#198441fbeac0fce9ace116da77254e17d38b8028"
-  integrity sha512-EhX+y5rFE0y55QFROHc65YwY7WYu811fyM+tTvDbnFcbxbCQQ3+HGJiXqyn9hvEKqQF4TzwmG4SCy4QIoz0GKQ==
+  version "1.0.340"
+  resolved "https://registry.yarnpkg.com/web-node/-/web-node-1.0.340.tgz#796d4d710f40ff85833d54b441877a68f8a64386"
+  integrity sha512-1qLMQ5ka3WJV2bnRYeByOvjfx0j67aSYuWyoYhyyX8MU/Z1RW/W3VMsCMGUh5ZHdpUBEonbXAq2Ubc+5lx14xA==
 
 webidl-conversions@^5.0.0:
   version "5.0.0"
@@ -8764,9 +8764,9 @@ webidl-conversions@^6.0.0:
   integrity sha512-qBIvFLGiBpLjfwmYAaHPXsn+ho5xZnGvyGvsarywGNc8VyQJUMHJ8OBKGGrPER0okBeMDaan4mNBlgBROxuI8w==
 
 weboptimizer@*:
-  version "2.0.682"
-  resolved "https://registry.yarnpkg.com/weboptimizer/-/weboptimizer-2.0.682.tgz#b575e5b8478d33368f9df214113d2e934f2357b8"
-  integrity sha512-yxvh2O5sJ9w09DeLzEh/sSzTTmUjG2dt1d2aN+i9q7wqRnoedmlaGrqnik9x8SZj18ZgJC4E0HN8C0dTZjjAQA==
+  version "2.0.683"
+  resolved "https://registry.yarnpkg.com/weboptimizer/-/weboptimizer-2.0.683.tgz#a12cb81d5164478dd53ca1833b63906c15073e5a"
+  integrity sha512-ZDPYmYbcqwndjEX1Fw0EaNHN9bKM8kmwycdcT6CpUFPbyjgrkQz8mOq6qtB91URuQQE/gaoI9M6tKVPYp+MXPQ==
   dependencies:
     "@babel/core" "*"
     "@babel/plugin-proposal-class-properties" "*"

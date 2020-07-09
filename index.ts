@@ -1,10 +1,10 @@
 // #!/usr/bin/env node
 // -*- coding: utf-8 -*-
-/** @module preRenderWebNodePlugin */
+/** @module pre-render-web-node-plugin */
 'use strict'
 /* !
     region header
-    [Project page](https://torben.website/preRenderWebNodePlugin)
+    [Project page](https://torben.website/pre-render-web-node-plugin)
 
     Copyright Torben Sickert (info["~at~"]torben.website) 16.12.2012
 
