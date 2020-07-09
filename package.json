@@ -1,11 +1,11 @@
 {
-  "name": "prerender-web-node-plugin",
+  "name": "prerenderwebnodeplugin",
   "version": "1.0.175",
   "license": "CC-BY-3.0",
   "description": "Pre-rendering hook for web-node applications.",
-  "homepage": "https://torben.website/prerender-web-node-plugin",
+  "homepage": "https://torben.website/pre-render-web-node-plugin",
   "documentationWebsite": {
-    "name": "prerender-web-node-plugin",
+    "name": "pre-render-web-node-plugin",
     "trackingCode": "UA-40192634-28"
   },
   "keywords": [
@@ -24,7 +24,7 @@
   "main": "index.js",
   "repository": {
     "type": "git",
-    "url": "https://github.com/thaibault/prerender-web-node-plugin.git"
+    "url": "https://github.com/thaibault/pre-render-web-node-plugin.git"
   },
   "scripts": {
     "build": "weboptimizer build",
