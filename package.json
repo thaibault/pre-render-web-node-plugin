@@ -1,11 +1,11 @@
 {
-  "name": "prerenderwebnodeplugin",
+  "name": "pre-render-web-node-plugin",
   "version": "1.0.173",
   "license": "CC-BY-3.0",
   "description": "Pre-rendering hook for webNode applications.",
-  "homepage": "https://torben.website/preRenderWebNodePlugin",
+  "homepage": "https://torben.website/pre-render-web-node-plugin",
   "documentationWebsite": {
-    "name": "preRenderWebNodePlugin",
+    "name": "pre-render-web-node-plugin",
     "trackingCode": "UA-40192634-28"
   },
   "keywords": [
@@ -24,23 +24,23 @@
   "main": "index.js",
   "repository": {
     "type": "git",
-    "url": "https://github.com/thaibault/preRenderWebNodePlugin.git"
+    "url": "https://github.com/thaibault/pre-render-web-node-plugin.git"
   },
   "scripts": {
-    "build": "webOptimizer build",
+    "build": "weboptimizer build",
     "check": "yarn check:types; yarn lint",
-    "check:types": "webOptimizer check:types",
-    "clear": "webOptimizer clear",
-    "document": "webOptimizer document",
-    "lint": "webOptimizer lint",
+    "check:types": "weboptimizer check:types",
+    "clear": "weboptimizer clear",
+    "document": "weboptimizer document",
+    "lint": "weboptimizer lint",
     "prepare": "yarn build",
     "report:coverage": "nyc report --reporter=text-lcov | coveralls",
     "serve": "yarn build && webNode",
     "start": "yarn serve",
-    "test": "webOptimizer test",
+    "test": "weboptimizer test",
     "update": "yarn version --patch && yarn publish",
     "update:documentation": "documentationWebsite --log-level info",
-    "watch": "webOptimizer build --watch"
+    "watch": "weboptimizer build --watch"
   },
   "devDependencies": {
     "@types/jest": "*",
