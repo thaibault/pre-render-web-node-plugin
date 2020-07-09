@@ -12,19 +12,19 @@ endregion -->
 Project status
 --------------
 
-[![npm version](https://badge.fury.io/js/prerenderwebnodeplugin.svg)](https://www.npmjs.com/package/prerenderwebnodeplugin)
-[![downloads](https://img.shields.io/npm/dy/prerenderwebnodeplugin.svg)](https://www.npmjs.com/package/prerenderwebnodeplugin)
-[![build status](https://travis-ci.org/thaibault/preRenderWebNodePlugin.svg?branch=master)](https://travis-ci.org/thaibault/preRenderWebNodePlugin)
-[![code coverage](https://coveralls.io/repos/github/thaibault/preRenderWebNodePlugin/badge.svg)](https://coveralls.io/github/thaibault/preRenderWebNodePlugin)
-[![dependencies](https://img.shields.io/david/thaibault/prerenderwebnodeplugin.svg)](https://david-dm.org/thaibault/prerenderwebnodeplugin)
-[![development dependencies](https://img.shields.io/david/dev/thaibault/prerenderwebnodeplugin.svg)](https://david-dm.org/thaibault/prerenderwebnodeplugin?type=dev)
-[![peer dependencies](https://img.shields.io/david/peer/thaibault/prerenderwebnodeplugin.svg)](https://david-dm.org/thaibault/prerenderwebnodeplugin?type=peer)
-[![documentation website](https://img.shields.io/website-up-down-green-red/https/torben.website/preRenderWebNodePlugin.svg?label=documentation-website)](https://torben.website/preRenderWebNodePlugin)
+[![npm version](https://badge.fury.io/js/pre-render-web-node-plugin.svg)](https://www.npmjs.com/package/pre-render-web-node-plugin)
+[![downloads](https://img.shields.io/npm/dy/pre-render-web-node-plugin.svg)](https://www.npmjs.com/package/pre-render-web-node-plugin)
+[![build status](https://travis-ci.org/thaibault/pre-render-web-node-plugin.svg?branch=master)](https://travis-ci.org/thaibault/pre-render-web-node-plugin)
+[![code coverage](https://coveralls.io/repos/github/thaibault/pre-render-web-node-plugin/badge.svg)](https://coveralls.io/github/thaibault/pre-render-web-node-plugin)
+[![dependencies](https://img.shields.io/david/thaibault/pre-render-web-node-plugin.svg)](https://david-dm.org/thaibault/pre-render-web-node-plugin)
+[![development dependencies](https://img.shields.io/david/dev/thaibault/pre-render-web-node-plugin.svg)](https://david-dm.org/thaibault/pre-render-web-node-plugin?type=dev)
+[![peer dependencies](https://img.shields.io/david/peer/thaibault/pre-render-web-node-plugin.svg)](https://david-dm.org/thaibault/pre-render-web-node-plugin?type=peer)
+[![documentation website](https://img.shields.io/website-up-down-green-red/https/torben.website/pre-render-web-node-plugin.svg?label=documentation-website)](https://torben.website/pre-render-web-node-plugin)
 
 Use case
 --------
 
-Pre-rendering hook for webNode applications.
+Pre-rendering hook for web-node applications.
 
 <!-- region vim modline
 vim: set tabstop=4 shiftwidth=4 expandtab:
