@@ -131,8 +131,7 @@ export class PreRender implements PluginHandler {
                     }
                 ))
                 .filter((file:File):boolean => Boolean(
-                    file.stats &&
-                    file.stats.isDirectory() &&
+                    file.stats?.isDirectory() &&
                     (
                         directoryNames.length === 0 ||
                         directoryNames.includes(file.name)
@@ -175,8 +174,7 @@ export class PreRender implements PluginHandler {
                     }
                 ))
                 .filter((file:File):boolean => Boolean(
-                    file.stats &&
-                    file.stats.isFile() &&
+                    file.stats?.isFile() &&
                     fileNames.includes(path.basename(file.name))
                 ))
             )
