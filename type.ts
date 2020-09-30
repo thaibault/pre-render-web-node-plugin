@@ -25,35 +25,35 @@ import {
 // region exports
 export type Configuration = BaseConfiguration & {
     preRender:{
-        cache:boolean;
+        cache:boolean
         locations:{
             executer:{
-                exclude:Array<string>|string;
-                include:Array<string>|string;
-                fileNames:Array<string>|string;
-            };
+                exclude:Array<string>|string
+                include:Array<string>|string
+                fileNames:Array<string>|string
+            }
             output:{
-                directoryNames:Array<string>|string;
-                exclude:Array<string>|string;
-            };
-        };
-        renderAfterConfigurationUpdates:boolean;
-    };
+                directoryNames:Array<string>|string
+                exclude:Array<string>|string
+            }
+        }
+        renderAfterConfigurationUpdates:boolean
+    }
 }
 export type Services = BaseServices & {preRender:{
     getPrerenderedOutputDirectories:(
         configuration:Configuration, plugins:Array<Plugin>
-    ) => Promise<Array<File>>;
+    ) => Promise<Array<File>>
     getPrerendererExecuter:(
         configuration:Configuration, plugins:Array<Plugin>
-    ) => Promise<Array<File>>;
+    ) => Promise<Array<File>>
     render:(
         configuration:Configuration,
         plugins:Array<Plugin>,
         additionalCLIParameter?:Array<string>|string
-    ) => Promise<Array<File>>;
+    ) => Promise<Array<File>>
     renderFile:(filePath:string, cliParameter?:Array<string>) =>
-        Promise<ProcessCloseReason>;
+        Promise<ProcessCloseReason>
 }}
 export interface PluginHandler extends BasePluginHandler {
     /**
