@@ -60,8 +60,7 @@
     "web-node": "*",
     "weboptimizer": "*",
     "webpack": "*",
-    "webpack-cli": "*",
-    "webpack-dev-server": "*"
+    "webpack-cli": "*"
   },
   "peerDependencies": {
     "@babel/runtime": "*",
