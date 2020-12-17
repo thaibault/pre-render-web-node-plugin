@@ -47,6 +47,7 @@
     "@types/loader-utils": "*",
     "@types/node": "*",
     "@types/rimraf": "*",
+    "@types/workbox-webpack-plugin": "*",
     "@typescript-eslint/eslint-plugin": "*",
     "@typescript-eslint/parser": "*",
     "babel-eslint": "*",
