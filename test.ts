@@ -27,8 +27,7 @@ describe('preRender', ():void => {
     beforeAll(async ():Promise<void> => {
         configuration = Tools.extend(
             true,
-            (await PluginAPI.loadAll(baseConfiguration)) as
-                unknown as Configuration,
+            (await PluginAPI.loadAll(baseConfiguration)).configuration,
             {template: packageConfiguration.webNode.preRender}
         )
     })
