@@ -25,18 +25,18 @@ describe('preRender', ():void => {
     // region mockup
     let configuration:Configuration
     beforeAll(async ():Promise<void> => {
-        configuration = Tools.extend(
-            true,
-            (await PluginAPI.loadAll(baseConfiguration)).configuration,
-            {template: packageConfiguration.webNode.preRender}
-        )
+        configuration = {
+            ...Tools.copy(
+                (await PluginAPI.loadAll(baseConfiguration)).configuration
+            ),
+            template: packageConfiguration.webNode.preRender
+        } as unknown as Configuration
     })
     // endregion
     test('postConfigurationLoaded', async ():Promise<void> => {
         const testConfiguration:Configuration = Tools.extend(
             true,
-            {},
-            configuration,
+            Tools.copy(configuration),
             {preRender: {renderAfterConfigurationUpdates: false}}
         )
         expect(PreRender.postConfigurationLoaded(testConfiguration, [], []))
