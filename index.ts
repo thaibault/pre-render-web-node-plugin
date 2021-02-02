@@ -156,28 +156,29 @@ export class PreRender implements PluginHandler {
         for (const location of PluginAPI.determineLocations(
             configuration, configuration.preRender.locations.executer.include
         ))
-            result.concat(
-                (await Tools.walkDirectoryRecursively(
-                    location,
-                    (file:File):false|void => {
-                        if (
-                            file.name.startsWith('.') ||
-                            PluginAPI.isInLocations(
-                                configuration,
-                                plugins,
-                                file.path,
-                                configuration.preRender.locations.executer
-                                    .exclude
-                            )
+            (await Tools.walkDirectoryRecursively(
+                location,
+                (file:File):false|void => {
+                    if (
+                        file.name.startsWith('.') ||
+                        PluginAPI.isInLocations(
+                            configuration,
+                            plugins,
+                            file.path,
+                            configuration.preRender.locations.executer
+                                .exclude
                         )
-                            return false
-                    }
-                ))
-                .filter((file:File):boolean => Boolean(
+                    )
+                        return false
+                }
+            ))
+            .map((file:File):void => {
+                if (
                     file.stats?.isFile() &&
                     fileNames.includes(path.basename(file.name))
-                ))
-            )
+                )
+                    result.push(file)
+            })
         return result
     }
     /**
