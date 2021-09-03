@@ -45,7 +45,6 @@
   "devDependencies": {
     "@babel/eslint-parser": "*",
     "@types/jest": "*",
-    "@types/loader-utils": "*",
     "@types/node": "*",
     "@types/rimraf": "*",
     "@types/workbox-webpack-plugin": "*",
