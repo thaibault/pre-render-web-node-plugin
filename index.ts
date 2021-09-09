@@ -19,7 +19,9 @@
 // region imports
 import {ChildProcess, spawn as spawnChildProcess} from 'child_process'
 import Tools, {CloseEventNames} from 'clientnode'
-import {File, ProcedureFunction, ProcessCloseReason} from 'clientnode/type'
+import {
+    File, ProcessCloseCallback, ProcessCloseReason, ProcessErrorCallback
+} from 'clientnode/type'
 import path from 'path'
 import removeDirectoryRecursively from 'rimraf'
 import {PluginAPI} from 'web-node'
@@ -254,8 +256,8 @@ export class PreRender implements PluginHandler {
     static renderFile(
         filePath:string, cliParameter:Array<string> = []
     ):Promise<ProcessCloseReason> {
-        return new Promise((
-            resolve:ProcedureFunction, reject:ProcedureFunction
+        return new Promise<ProcessCloseReason>((
+            resolve:ProcessCloseCallback, reject:ProcessErrorCallback
         ):void => {
             const childProcess:ChildProcess = spawnChildProcess(
                 filePath,
