@@ -23,45 +23,55 @@ import {
 } from 'web-node/type'
 // endregion
 // region exports
-export type Configuration = BaseConfiguration & {
-    preRender:{
-        cache:boolean
-        locations:{
-            executer:{
-                exclude:Array<string>|string
-                include:Array<string>|string
-                fileNames:Array<string>|string
+export type Configuration<ConfigurationType = {}> =
+    BaseConfiguration<{
+        preRender:{
+            cache:boolean
+            locations:{
+                executer:{
+                    exclude:Array<string>|string
+                    include:Array<string>|string
+                    fileNames:Array<string>|string
+                }
+                output:{
+                    directoryNames:Array<string>|string
+                    exclude:Array<string>|string
+                }
             }
-            output:{
-                directoryNames:Array<string>|string
-                exclude:Array<string>|string
-            }
+            renderAfterConfigurationUpdates:boolean
         }
-        renderAfterConfigurationUpdates:boolean
-    }
-}
-export type Services = BaseServices & {preRender:{
-    getPrerenderedOutputDirectories:(
-        configuration:Configuration, plugins:Array<Plugin>
-    ) => Promise<Array<File>>
-    getPrerendererExecuter:(
-        configuration:Configuration, plugins:Array<Plugin>
-    ) => Promise<Array<File>>
-    render:(
-        configuration:Configuration,
-        plugins:Array<Plugin>,
-        additionalCLIParameter?:Array<string>|string
-    ) => Promise<Array<File>>
-    renderFile:(filePath:string, cliParameter?:Array<string>) =>
-        Promise<ProcessCloseReason>
-}}
+    }> &
+    ConfigurationType
+
+export type Services<ServiceType = {}> =
+    BaseServices<{
+        preRender:{
+            getPrerenderedOutputDirectories:(
+                configuration:Configuration, plugins:Array<Plugin>
+            ) => Promise<Array<File>>
+            getPrerendererExecuter:(
+                configuration:Configuration, plugins:Array<Plugin>
+            ) => Promise<Array<File>>
+            render:(
+                configuration:Configuration,
+                plugins:Array<Plugin>,
+                additionalCLIParameter?:Array<string>|string
+            ) => Promise<Array<File>>
+            renderFile:(filePath:string, cliParameter?:Array<string>) =>
+                Promise<ProcessCloseReason>
+        }
+    }> &
+    ServiceType
+
 export interface PluginHandler extends BasePluginHandler {
     /**
      * Hook before pre-rendering starts. List of executer can be modified.
+     *
      * @param preRendererFiles - List of files which pre-renders something.
      * @param configuration - Configuration object extended by each plugin
      * specific configuration.
      * @param plugins - Topological sorted list of plugins.
+     *
      * @returns Given entry files.
      */
     prePreRendererRender?(
@@ -72,11 +82,13 @@ export interface PluginHandler extends BasePluginHandler {
     /**
      * Hook before a pre-renderer will be called. CLI-Parameter can be
      * modified.
+     *
      * @param cliParameters - List of cli parameter provided to pre-renderers.
      * @param file - Executer file to execute with provided cli parameter.
      * @param configuration - Configuration object extended by each plugin
      * specific configuration.
      * @param plugins - Topological sorted list of plugins.
+     *
      * @returns Given entry files.
      */
     prePreRendererCLIParameter?(
@@ -87,10 +99,12 @@ export interface PluginHandler extends BasePluginHandler {
     ):Promise<Array<string>>
     /**
      * Hook after a pre-renderer has been called.
+     *
      * @param preRendererFiles - List of files which pre-renders something.
      * @param configuration - Configuration object extended by each plugin
      * specific configuration.
      * @param plugins - Topological sorted list of plugins.
+     *
      * @returns Given entry files.
      */
     postPreRendererRender?(

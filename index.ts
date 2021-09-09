@@ -19,7 +19,9 @@
 // region imports
 import {ChildProcess, spawn as spawnChildProcess} from 'child_process'
 import Tools, {CloseEventNames} from 'clientnode'
-import {File, ProcedureFunction, ProcessCloseReason} from 'clientnode/type'
+import {
+    File, ProcessCloseCallback, ProcessCloseReason, ProcessErrorCallback
+} from 'clientnode/type'
 import path from 'path'
 import removeDirectoryRecursively from 'rimraf'
 import {PluginAPI} from 'web-node'
@@ -35,10 +37,12 @@ export class PreRender implements PluginHandler {
     /**
      * Triggered hook when at least one plugin has a new configuration file and
      * configuration object has been changed.
+     *
      * @param configuration - Updated configuration object.
      * @param pluginsWithChangedConfiguration - List of plugins which have a
      * changed plugin configuration.
      * @param plugins - List of all loaded plugins.
+     *
      * @returns New configuration object to use.
      */
     static async postConfigurationLoaded(
@@ -48,11 +52,14 @@ export class PreRender implements PluginHandler {
     ):Promise<Configuration> {
         if (configuration.preRender.renderAfterConfigurationUpdates)
             PreRender.render(configuration, plugins)
+
         return configuration
     }
     /**
      * Appends an pre-renderer to the web node services.
+     *
      * @param services - An object with stored service instances.
+     *
      * @returns Given and extended object of services.
      */
     static preLoadService(services:Services):Services {
@@ -64,19 +71,23 @@ export class PreRender implements PluginHandler {
             render: PreRender.render.bind(PreRender),
             renderFile: PreRender.renderFile.bind(PreRender)
         }
+
         return services
     }
     /**
      * Triggers when application will be closed soon and removes created files.
+     *
      * @param services - An object with stored service instances.
      * @param configuration - Updated configuration object.
      * @param plugins - List of all loaded plugins.
+     *
      * @returns Given object of services.
      */
     static async shouldExit(
         services:Services, configuration:Configuration, plugins:Array<Plugin>
     ):Promise<Services> {
         const preRenderOutputRemoveingPromises:Array<Promise<string>> = []
+
         for (const file of await PreRender.getPrerenderedOutputDirectories(
             configuration, plugins
         ))
@@ -86,19 +97,23 @@ export class PreRender implements PluginHandler {
                 removeDirectoryRecursively(
                     file.path,
                     {glob: false},
-                    (error:Error|undefined):void =>
+                    (error?:Error|null):void =>
                         error ? reject(error) : resolve()
                 )
             ))
+
         await Promise.all(preRenderOutputRemoveingPromises)
+
         return services
     }
     // endregion
     // region helper
     /**
      * Retrieves all directories which have a pre-rendered structure.
+     *
      * @param configuration - Updated configuration object.
      * @param plugins - List of all loaded plugins.
+     *
      * @returns A promise holding all resolved file objects.
      */
     static async getPrerenderedOutputDirectories(
@@ -113,10 +128,11 @@ export class PreRender implements PluginHandler {
         const preRendererPaths:Array<string> =
             (await PreRender.getPrerendererExecuter(configuration, plugins))
                 .map((file:File):string => path.dirname(file.path))
+
         const result:Array<File> = []
         for (const location of preRendererPaths)
-            result.concat(
-                (await Tools.walkDirectoryRecursively(
+            result
+                .concat((await Tools.walkDirectoryRecursively(
                     location,
                     (file:File):false|void => {
                         if (
@@ -138,12 +154,15 @@ export class PreRender implements PluginHandler {
                     )
                 ))
             )
+
         return result
     }
     /**
      * Retrieves all files to process.
+     *
      * @param configuration - Updated configuration object.
      * @param plugins - List of all loaded plugins.
+     *
      * @returns A promise holding all resolved file objects.
      */
     static async getPrerendererExecuter(
@@ -152,6 +171,7 @@ export class PreRender implements PluginHandler {
         const fileNames:Array<string> = ([] as Array<string>).concat(
             configuration.preRender.locations.executer.fileNames
         )
+
         const result:Array<File> = []
         for (const location of PluginAPI.determineLocations(
             configuration, configuration.preRender.locations.executer.include
@@ -179,13 +199,16 @@ export class PreRender implements PluginHandler {
                 )
                     result.push(file)
             })
+
         return result
     }
     /**
      * Triggers pre-rendering.
+     *
      * @param configuration - Configuration object.
      * @param plugins - List of all loaded plugins.
      * @param additionalCLIParameter - List of additional cli parameter to use.
+     *
      * @returns A Promise resolving to a list of prerenderer files.
      */
     static async render(
@@ -200,6 +223,7 @@ export class PreRender implements PluginHandler {
             await PreRender.getPrerendererExecuter(configuration, plugins)
         )
         const preRenderingPromises:Array<Promise<ProcessCloseReason>> = []
+
         for (const file of preRendererFiles)
             preRenderingPromises.push(PreRender.renderFile(
                 file.path,
@@ -214,22 +238,26 @@ export class PreRender implements PluginHandler {
                     file
                 ))
             ))
+
         await Promise.all(preRenderingPromises)
+
         return await PluginAPI.callStack(
             'postPreRendererRender', plugins, configuration, preRendererFiles
         )
     }
     /**
      * Executes given pre-renderer file.
+     *
      * @param filePath - File path to execute as pre-renderer.
      * @param cliParameter - List of cli parameter to use.
+     *
      * @returns A promise resolving after pre-rendering has finished.
      */
     static renderFile(
         filePath:string, cliParameter:Array<string> = []
     ):Promise<ProcessCloseReason> {
-        return new Promise((
-            resolve:ProcedureFunction, reject:ProcedureFunction
+        return new Promise<ProcessCloseReason>((
+            resolve:ProcessCloseCallback, reject:ProcessErrorCallback
         ):void => {
             const childProcess:ChildProcess = spawnChildProcess(
                 filePath,
@@ -241,6 +269,7 @@ export class PreRender implements PluginHandler {
                     stdio: 'inherit'
                 }
             )
+
             for (const closeEventName of CloseEventNames)
                 childProcess.on(
                     closeEventName,

@@ -18,10 +18,10 @@
     "pre-rendering"
   ],
   "files": [
-    "index.ts",
-    "type.ts"
+    "index.d.ts",
+    "index.js",
+    "type.d.ts"
   ],
-  "main": "index.js",
   "repository": {
     "type": "git",
     "url": "https://github.com/thaibault/pre-render-web-node-plugin.git"
@@ -43,14 +43,13 @@
     "watch": "weboptimizer build --watch"
   },
   "devDependencies": {
+    "@babel/eslint-parser": "*",
     "@types/jest": "*",
-    "@types/loader-utils": "*",
     "@types/node": "*",
     "@types/rimraf": "*",
     "@types/workbox-webpack-plugin": "*",
     "@typescript-eslint/eslint-plugin": "*",
     "@typescript-eslint/parser": "*",
-    "babel-eslint": "*",
     "clientnode": "*",
     "documentation-website": "*",
     "eslint": "*",
@@ -66,8 +65,13 @@
     "clientnode": "*",
     "web-node": "*"
   },
+  "peerDependenciesMeta": {
+    "@babel/runtime": {
+      "optional": true
+    }
+  },
   "resolutions": {
-    "@types/webpack": "https://registry.yarnpkg.com/@favware/skip-dependency/-/skip-dependency-1.1.0.tgz"
+    "@types/webpack": "https://registry.yarnpkg.com/@favware/skip-dependency/-/skip-dependency-1.1.1.tgz"
   },
   "sideEffects": true,
   "webNode": {
@@ -102,6 +106,6 @@
     }
   },
   "dependencies": {
-    "@types/webpack": "https://registry.yarnpkg.com/@favware/skip-dependency/-/skip-dependency-1.1.0.tgz"
+    "@types/webpack": "https://registry.yarnpkg.com/@favware/skip-dependency/-/skip-dependency-1.1.1.tgz"
   }
 }
