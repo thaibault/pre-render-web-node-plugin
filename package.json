@@ -35,7 +35,7 @@
     "lint": "weboptimizer lint",
     "prepare": "yarn build",
     "report:coverage": "nyc report --reporter=text-lcov | coveralls",
-    "serve": "yarn build && webNode",
+    "serve": "yarn build && web-node",
     "start": "yarn serve",
     "test": "weboptimizer test",
     "update": "yarn version --patch && yarn publish",
