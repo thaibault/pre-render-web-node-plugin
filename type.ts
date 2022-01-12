@@ -15,6 +15,7 @@
 */
 // region imports
 import {File, ProcessCloseReason} from 'clientnode/type'
+import {PluginAPI} from 'web-node'
 import {
     Configuration as BaseConfiguration,
     Plugin,
@@ -67,50 +68,56 @@ export interface PluginHandler extends BasePluginHandler {
     /**
      * Hook before pre-rendering starts. List of executer can be modified.
      *
-     * @param preRendererFiles - List of files which pre-renders something.
-     * @param configuration - Configuration object extended by each plugin
+     * @param _preRendererFiles - List of files which pre-renders something.
+     * @param _configuration - Configuration object extended by each plugin
      * specific configuration.
-     * @param plugins - Topological sorted list of plugins.
+     * @param _plugins - Topological sorted list of plugins.
+     * @param _pluginAPI - Plugin api reference.
      *
      * @returns Given entry files.
      */
     prePreRendererRender?(
-        preRendererFiles:Array<File>,
-        configuration:Configuration,
-        plugins:Array<Plugin>
+        _preRendererFiles:Array<File>,
+        _configuration:Configuration,
+        _plugins:Array<Plugin>,
+        _pluginAPI:typeof PluginAPI
     ):Promise<Array<File>>
     /**
      * Hook before a pre-renderer will be called. CLI-Parameter can be
      * modified.
      *
-     * @param cliParameters - List of cli parameter provided to pre-renderers.
-     * @param file - Executer file to execute with provided cli parameter.
-     * @param configuration - Configuration object extended by each plugin
+     * @param _cliParameters - List of cli parameter provided to pre-renderers.
+     * @param _file - Executer file to execute with provided cli parameter.
+     * @param _configuration - Configuration object extended by each plugin
      * specific configuration.
-     * @param plugins - Topological sorted list of plugins.
+     * @param _plugins - Topological sorted list of plugins.
+     * @param _pluginAPI - Plugin api reference.
      *
      * @returns Given entry files.
      */
     prePreRendererCLIParameter?(
-        cliParameters:Array<string>,
-        file:File,
-        configuration:Configuration,
-        plugins:Array<Plugin>
+        _cliParameters:Array<string>,
+        _file:File,
+        _configuration:Configuration,
+        _plugins:Array<Plugin>,
+        _pluginAPI:typeof PluginAPI
     ):Promise<Array<string>>
     /**
      * Hook after a pre-renderer has been called.
      *
-     * @param preRendererFiles - List of files which pre-renders something.
-     * @param configuration - Configuration object extended by each plugin
+     * @param _preRendererFiles - List of files which pre-renders something.
+     * @param _configuration - Configuration object extended by each plugin
      * specific configuration.
-     * @param plugins - Topological sorted list of plugins.
+     * @param _plugins - Topological sorted list of plugins.
+     * @param _pluginAPI - Plugin api reference.
      *
      * @returns Given entry files.
      */
     postPreRendererRender?(
-        preRendererFiles:Array<File>,
-        configuration:Configuration,
-        plugins:Array<Plugin>
+        _preRendererFiles:Array<File>,
+        _configuration:Configuration,
+        _plugins:Array<Plugin>,
+        _pluginAPI:typeof PluginAPI
     ):Promise<Array<File>>
 }
 // endregion
