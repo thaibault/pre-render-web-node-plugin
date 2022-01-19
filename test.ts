@@ -40,8 +40,9 @@ describe('preRender', ():void => {
                 RecursivePartial<Configuration>
         )
 
-        expect(PreRender.postConfigurationLoaded(testConfiguration, [], []))
-            .resolves.toStrictEqual(testConfiguration)
+        expect(PreRender.postConfigurationLoaded(
+            testConfiguration, [], [], PluginAPI
+        )).resolves.toStrictEqual(testConfiguration)
     })
     // TODO test all methods
 })

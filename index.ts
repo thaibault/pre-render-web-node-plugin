@@ -37,27 +37,27 @@ export class PreRender implements PluginHandler {
     /**
      * Triggered hook when at least one plugin has a new configuration file and
      * configuration object has been changed.
-     *
      * @param configuration - Updated configuration object.
      * @param pluginsWithChangedConfiguration - List of plugins which have a
      * changed plugin configuration.
      * @param plugins - List of all loaded plugins.
+     * @param pluginAPI - Plugin api reference.
      *
      * @returns New configuration object to use.
      */
     static async postConfigurationLoaded(
         configuration:Configuration,
         pluginsWithChangedConfiguration:Array<Plugin>,
-        plugins:Array<Plugin>
+        plugins:Array<Plugin>,
+        pluginAPI:typeof PluginAPI
     ):Promise<Configuration> {
         if (configuration.preRender.renderAfterConfigurationUpdates)
-            PreRender.render(configuration, plugins)
+            PreRender.render(configuration, plugins, pluginAPI)
 
         return configuration
     }
     /**
      * Appends an pre-renderer to the web node services.
-     *
      * @param services - An object with stored service instances.
      *
      * @returns Given and extended object of services.
@@ -76,20 +76,23 @@ export class PreRender implements PluginHandler {
     }
     /**
      * Triggers when application will be closed soon and removes created files.
-     *
      * @param services - An object with stored service instances.
      * @param configuration - Updated configuration object.
      * @param plugins - List of all loaded plugins.
+     * @param pluginAPI - Plugin api reference.
      *
      * @returns Given object of services.
      */
     static async shouldExit(
-        services:Services, configuration:Configuration, plugins:Array<Plugin>
+        services:Services,
+        configuration:Configuration,
+        plugins:Array<Plugin>,
+        pluginAPI:typeof PluginAPI
     ):Promise<Services> {
         const preRenderOutputRemoveingPromises:Array<Promise<string>> = []
 
         for (const file of await PreRender.getPrerenderedOutputDirectories(
-            configuration, plugins
+            configuration, plugins, pluginAPI
         ))
             preRenderOutputRemoveingPromises.push(new Promise((
                 resolve:Function, reject:Function
@@ -110,14 +113,16 @@ export class PreRender implements PluginHandler {
     // region helper
     /**
      * Retrieves all directories which have a pre-rendered structure.
-     *
      * @param configuration - Updated configuration object.
      * @param plugins - List of all loaded plugins.
+     * @param pluginAPI - Plugin api reference.
      *
      * @returns A promise holding all resolved file objects.
      */
     static async getPrerenderedOutputDirectories(
-        configuration:Configuration, plugins:Array<Plugin>
+        configuration:Configuration,
+        plugins:Array<Plugin>,
+        pluginAPI:typeof PluginAPI
     ):Promise<Array<File>> {
         const directoryNames:Array<string> = ([] as Array<string>).concat(
             configuration.preRender.locations.output.directoryNames
@@ -126,7 +131,9 @@ export class PreRender implements PluginHandler {
             configuration.preRender.locations.output.exclude
         )
         const preRendererPaths:Array<string> =
-            (await PreRender.getPrerendererExecuter(configuration, plugins))
+            (await PreRender.getPrerendererExecuter(
+                configuration, plugins, pluginAPI
+            ))
                 .map((file:File):string => path.dirname(file.path))
 
         const result:Array<File> = []
@@ -159,21 +166,23 @@ export class PreRender implements PluginHandler {
     }
     /**
      * Retrieves all files to process.
-     *
      * @param configuration - Updated configuration object.
      * @param plugins - List of all loaded plugins.
+     * @param pluginAPI - Plugin api reference.
      *
      * @returns A promise holding all resolved file objects.
      */
     static async getPrerendererExecuter(
-        configuration:Configuration, plugins:Array<Plugin>
+        configuration:Configuration,
+        plugins:Array<Plugin>,
+        pluginAPI:typeof PluginAPI
     ):Promise<Array<File>> {
         const fileNames:Array<string> = ([] as Array<string>).concat(
             configuration.preRender.locations.executer.fileNames
         )
 
         const result:Array<File> = []
-        for (const location of PluginAPI.determineLocations(
+        for (const location of pluginAPI.determineLocations(
             configuration, configuration.preRender.locations.executer.include
         ))
             (await Tools.walkDirectoryRecursively(
@@ -181,7 +190,7 @@ export class PreRender implements PluginHandler {
                 (file:File):false|void => {
                     if (
                         file.name.startsWith('.') ||
-                        PluginAPI.isInLocations(
+                        pluginAPI.isInLocations(
                             configuration,
                             plugins,
                             file.path,
@@ -204,9 +213,9 @@ export class PreRender implements PluginHandler {
     }
     /**
      * Triggers pre-rendering.
-     *
      * @param configuration - Configuration object.
      * @param plugins - List of all loaded plugins.
+     * @param pluginAPI - Plugin api reference.
      * @param additionalCLIParameter - List of additional cli parameter to use.
      *
      * @returns A Promise resolving to a list of prerenderer files.
@@ -214,20 +223,23 @@ export class PreRender implements PluginHandler {
     static async render(
         configuration:Configuration,
         plugins:Array<Plugin>,
+        pluginAPI:typeof PluginAPI,
         additionalCLIParameter:Array<string>|string = []
     ):Promise<Array<File>> {
-        const preRendererFiles:Array<File> = await PluginAPI.callStack(
+        const preRendererFiles:Array<File> = await pluginAPI.callStack(
             'prePreRendererRender',
             plugins,
             configuration,
-            await PreRender.getPrerendererExecuter(configuration, plugins)
+            await PreRender.getPrerendererExecuter(
+                configuration, plugins, pluginAPI
+            )
         )
         const preRenderingPromises:Array<Promise<ProcessCloseReason>> = []
 
         for (const file of preRendererFiles)
             preRenderingPromises.push(PreRender.renderFile(
                 file.path,
-                [].concat(await PluginAPI.callStack(
+                [].concat(await pluginAPI.callStack(
                     'prePreRendererCLIParameter',
                     plugins,
                     configuration,
@@ -241,13 +253,12 @@ export class PreRender implements PluginHandler {
 
         await Promise.all(preRenderingPromises)
 
-        return await PluginAPI.callStack(
+        return await pluginAPI.callStack(
             'postPreRendererRender', plugins, configuration, preRendererFiles
         )
     }
     /**
      * Executes given pre-renderer file.
-     *
      * @param filePath - File path to execute as pre-renderer.
      * @param cliParameter - List of cli parameter to use.
      *

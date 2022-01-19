@@ -48,17 +48,22 @@ export type Services<ServiceType = {}> =
     BaseServices<{
         preRender:{
             getPrerenderedOutputDirectories:(
-                configuration:Configuration, plugins:Array<Plugin>
+                _configuration:Configuration,
+                _plugins:Array<Plugin>,
+                _pluginAPI:typeof PluginAPI
             ) => Promise<Array<File>>
             getPrerendererExecuter:(
-                configuration:Configuration, plugins:Array<Plugin>
+                _configuration:Configuration,
+                _plugins:Array<Plugin>,
+                _pluginAPI:typeof PluginAPI
             ) => Promise<Array<File>>
             render:(
-                configuration:Configuration,
-                plugins:Array<Plugin>,
-                additionalCLIParameter?:Array<string>|string
+                _configuration:Configuration,
+                _plugins:Array<Plugin>,
+                _pluginAPI:typeof PluginAPI,
+                _additionalCLIParameter?:Array<string>|string
             ) => Promise<Array<File>>
-            renderFile:(filePath:string, cliParameter?:Array<string>) =>
+            renderFile:(_filePath:string, _cliParameter?:Array<string>) =>
                 Promise<ProcessCloseReason>
         }
     }> &
