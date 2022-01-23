@@ -26,10 +26,9 @@ describe('preRender', ():void => {
     // region mockup
     let configuration:Configuration
     beforeAll(async ():Promise<void> => {
-        configuration = Tools.copy(
-            (await PluginAPI.loadAll(baseConfiguration)).configuration as
-                Configuration
-        )
+        configuration = 
+            (await PluginAPI.loadAll(Tools.copy(baseConfiguration)))
+                .configuration as Configuration
     })
     // endregion
     test('postConfigurationLoaded', async ():Promise<void> => {
