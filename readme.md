@@ -13,8 +13,8 @@ endregion -->
 Project status
 --------------
 
-[![npm](https://img.shields.io/npm/v/pre-render-web-node-plugin?color=%23d55e5d&label=npm%20package%20version&logoColor=%23d55e5d)](https://www.npmjs.com/package/pre-render-web-node-plugin)
-[![npm downloads](https://img.shields.io/npm/dy/pre-render-web-node-plugin.svg)](https://www.npmjs.com/package/pre-render-web-node-plugin)
+[![npm](https://img.shields.io/npm/v/prerenderwebnodeplugin?color=%23d55e5d&label=npm%20package%20version&logoColor=%23d55e5d)](https://www.npmjs.com/package/prerenderwebnodeplugin)
+[![npm downloads](https://img.shields.io/npm/dy/prerenderwebnodeplugin.svg)](https://www.npmjs.com/package/prerenderwebnodeplugin)
 
 [![<LABEL>](https://github.com/thaibault/pre-render-web-node-plugin/actions/workflows/build.yaml/badge.svg)](https://github.com/thaibault/pre-render-web-node-plugin/actions/workflows/build.yaml)
 [![<LABEL>](https://github.com/thaibault/pre-render-web-node-plugin/actions/workflows/test.yaml/badge.svg)](https://github.com/thaibault/pre-render-web-node-plugin/actions/workflows/test.yaml)
