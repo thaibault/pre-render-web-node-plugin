@@ -14,7 +14,7 @@
     endregion
 */
 // region imports
-import {File, ProcessCloseReason} from 'clientnode/type'
+import {File, Mapping, ProcessCloseReason} from 'clientnode/type'
 import {PluginAPI} from 'web-node'
 import {
     Configuration as BaseConfiguration,
@@ -24,7 +24,7 @@ import {
 } from 'web-node/type'
 // endregion
 // region exports
-export type Configuration<ConfigurationType = {}> =
+export type Configuration<ConfigurationType = Mapping<unknown>> =
     BaseConfiguration<{
         preRender:{
             cache:boolean
@@ -44,7 +44,7 @@ export type Configuration<ConfigurationType = {}> =
     }> &
     ConfigurationType
 
-export type Services<ServiceType = {}> =
+export type Services<ServiceType = Mapping<unknown>> =
     BaseServices<{
         preRender:{
             getPrerenderedOutputDirectories:(
@@ -72,7 +72,6 @@ export type Services<ServiceType = {}> =
 export interface PluginHandler extends BasePluginHandler {
     /**
      * Hook before pre-rendering starts. List of executer can be modified.
-     *
      * @param _preRendererFiles - List of files which pre-renders something.
      * @param _configuration - Configuration object extended by each plugin
      * specific configuration.
@@ -90,7 +89,6 @@ export interface PluginHandler extends BasePluginHandler {
     /**
      * Hook before a pre-renderer will be called. CLI-Parameter can be
      * modified.
-     *
      * @param _cliParameters - List of cli parameter provided to pre-renderers.
      * @param _file - Executer file to execute with provided cli parameter.
      * @param _configuration - Configuration object extended by each plugin
@@ -109,7 +107,6 @@ export interface PluginHandler extends BasePluginHandler {
     ):Promise<Array<string>>
     /**
      * Hook after a pre-renderer has been called.
-     *
      * @param _preRendererFiles - List of files which pre-renders something.
      * @param _configuration - Configuration object extended by each plugin
      * specific configuration.

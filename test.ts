@@ -19,19 +19,18 @@ import {RecursivePartial} from 'clientnode/type'
 import {configuration as baseConfiguration, PluginAPI} from 'web-node'
 
 import PreRender from './index'
-import packageConfiguration from './package.json'
 import {Configuration} from './type'
 // endregion
 describe('preRender', ():void => {
     // region mockup
     let configuration:Configuration
     beforeAll(async ():Promise<void> => {
-        configuration = 
+        configuration =
             (await PluginAPI.loadAll(Tools.copy(baseConfiguration)))
                 .configuration as Configuration
     })
     // endregion
-    test('postConfigurationLoaded', async ():Promise<void> => {
+    test('postConfigurationLoaded', ():void => {
         const testConfiguration:Configuration = Tools.extend<Configuration>(
             true,
             Tools.copy(configuration),
@@ -39,7 +38,7 @@ describe('preRender', ():void => {
                 RecursivePartial<Configuration>
         )
 
-        expect(PreRender.postConfigurationLoaded(
+        void expect(PreRender.postConfigurationLoaded(
             testConfiguration, [], [], PluginAPI
         )).resolves.toStrictEqual(testConfiguration)
     })

@@ -52,7 +52,7 @@ export class PreRender implements PluginHandler {
         pluginAPI:typeof PluginAPI
     ):Promise<Configuration> {
         if (configuration.preRender.renderAfterConfigurationUpdates)
-            PreRender.render(configuration, plugins, pluginAPI)
+            await PreRender.render(configuration, plugins, pluginAPI)
 
         return configuration
     }
@@ -89,13 +89,13 @@ export class PreRender implements PluginHandler {
         plugins:Array<Plugin>,
         pluginAPI:typeof PluginAPI
     ):Promise<Services> {
-        const preRenderOutputRemoveingPromises:Array<Promise<string>> = []
+        const preRenderOutputRemoveingPromises:Array<Promise<void>> = []
 
         for (const file of await PreRender.getPrerenderedOutputDirectories(
             configuration, plugins, pluginAPI
         ))
-            preRenderOutputRemoveingPromises.push(new Promise((
-                resolve:Function, reject:Function
+            preRenderOutputRemoveingPromises.push(new Promise<void>((
+                resolve:() => void, reject:(_reason:Error) => void
             ):void =>
                 removeDirectoryRecursively(
                     file.path,
@@ -138,8 +138,8 @@ export class PreRender implements PluginHandler {
 
         const result:Array<File> = []
         for (const location of preRendererPaths)
-            result
-                .concat((await Tools.walkDirectoryRecursively(
+            result.concat(
+                (await Tools.walkDirectoryRecursively(
                     location,
                     (file:File):false|void => {
                         if (
@@ -153,13 +153,13 @@ export class PreRender implements PluginHandler {
                             return false
                     }
                 ))
-                .filter((file:File):boolean => Boolean(
-                    file.stats?.isDirectory() &&
-                    (
-                        directoryNames.length === 0 ||
-                        directoryNames.includes(file.name)
-                    )
-                ))
+                    .filter((file:File):boolean => Boolean(
+                        file.stats?.isDirectory() &&
+                        (
+                            directoryNames.length === 0 ||
+                            directoryNames.includes(file.name)
+                        )
+                    ))
             )
 
         return result
@@ -201,13 +201,13 @@ export class PreRender implements PluginHandler {
                         return false
                 }
             ))
-            .map((file:File):void => {
-                if (
-                    file.stats?.isFile() &&
-                    fileNames.includes(path.basename(file.name))
-                )
-                    result.push(file)
-            })
+                .map((file:File):void => {
+                    if (
+                        file.stats?.isFile() &&
+                        fileNames.includes(path.basename(file.name))
+                    )
+                        result.push(file)
+                })
 
         return result
     }
@@ -245,7 +245,7 @@ export class PreRender implements PluginHandler {
                     configuration,
                     ([] as Array<string>).concat(
                         additionalCLIParameter,
-                        `${configuration.preRender.cache}`
+                        `${String(configuration.preRender.cache)}`
                     ),
                     file
                 ))
