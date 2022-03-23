@@ -1,13 +1,7 @@
 {
   "name": "prerenderwebnodeplugin",
   "version": "1.0.234",
-  "license": "CC-BY-3.0",
   "description": "Pre-rendering hook for web-node applications.",
-  "homepage": "https://torben.website/pre-render-web-node-plugin",
-  "documentationWebsite": {
-    "name": "pre-render-web-node-plugin",
-    "trackingCode": "UA-40192634-28"
-  },
   "keywords": [
     "web",
     "backend",
@@ -17,6 +11,17 @@
     "pre-render",
     "pre-rendering"
   ],
+  "homepage": "https://torben.website/pre-render-web-node-plugin",
+  "bugs": {
+    "email": "info@torben.website",
+    "url": "https://github.com/thaibault/pre-render-web-node-plugin/issues"
+  },
+  "license": "CC-BY-3.0",
+  "author": {
+    "name": "Torben Sickert",
+    "email": "info@torben.website",
+    "url": "https://torben.website"
+  },
   "files": [
     "index.d.ts",
     "index.js",
@@ -34,13 +39,17 @@
     "document": "weboptimizer document",
     "lint": "weboptimizer lint",
     "prepare": "yarn build",
-    "report:coverage": "nyc report --reporter=text-lcov | coveralls",
     "serve": "yarn build && yarn start",
     "start": "web-node '{plugin: {hotReloading: true}}'",
     "test": "weboptimizer test",
+    "test:coverage": "weboptimizer test:coverage",
+    "test:coverage:report": "weboptimizer test:coverage:report",
     "update": "yarn version --patch && yarn publish",
     "update:documentation": "documentationWebsite --log-level info",
     "watch": "weboptimizer build --watch"
+  },
+  "dependencies": {
+    "@types/webpack": "https://registry.yarnpkg.com/@favware/skip-dependency/-/skip-dependency-1.1.1.tgz"
   },
   "devDependencies": {
     "@babel/eslint-parser": "*",
@@ -69,11 +78,19 @@
       "optional": true
     }
   },
+  "engines": {
+    "node": ">=17",
+    "npm": ">=7"
+  },
   "resolutions": {
     "@types/webpack": "https://registry.yarnpkg.com/@favware/skip-dependency/-/skip-dependency-1.1.1.tgz",
     "colors": "1.4.0"
   },
   "sideEffects": true,
+  "documentationWebsite": {
+    "name": "pre-render-web-node-plugin",
+    "trackingCode": "UA-40192634-28"
+  },
   "webNodeInternalName": "preRender",
   "webNode": {
     "preRender": {
@@ -105,8 +122,5 @@
       "boilerplate": "node",
       "payload": "node"
     }
-  },
-  "dependencies": {
-    "@types/webpack": "https://registry.yarnpkg.com/@favware/skip-dependency/-/skip-dependency-1.1.1.tgz"
   }
 }
