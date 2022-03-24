@@ -32,7 +32,7 @@
     "url": "https://github.com/thaibault/pre-render-web-node-plugin.git"
   },
   "scripts": {
-    "build": "weboptimizer build",
+    "build": "weboptimizer build:types && weboptimizer build",
     "check": "yarn check:types; yarn lint",
     "check:types": "weboptimizer check:types",
     "clear": "weboptimizer clear",
