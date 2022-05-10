@@ -53,7 +53,6 @@
   },
   "devDependencies": {
     "@babel/eslint-parser": "*",
-    "@types/jest": "*",
     "@types/node": "*",
     "@types/rimraf": "*",
     "@typescript-eslint/eslint-plugin": "*",
