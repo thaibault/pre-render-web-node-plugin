@@ -14,6 +14,7 @@
     endregion
 */
 // region imports
+import {beforeAll, describe, expect, test} from '@jest/globals'
 import Tools from 'clientnode'
 import {RecursivePartial} from 'clientnode/type'
 import {configuration as baseConfiguration, PluginAPI} from 'web-node'
