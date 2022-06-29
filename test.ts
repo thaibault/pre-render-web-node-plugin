@@ -31,7 +31,7 @@ describe('preRender', ():void => {
                 .configuration as Configuration
     })
     // endregion
-    test('postConfigurationLoaded', ():void => {
+    test('postConfigurationLoaded', async ():Promise<void> => {
         const testConfiguration:Configuration = Tools.extend<Configuration>(
             true,
             Tools.copy(configuration),
@@ -39,9 +39,13 @@ describe('preRender', ():void => {
                 RecursivePartial<Configuration>
         )
 
-        void expect(PreRender.postConfigurationLoaded(
-            testConfiguration, [], [], PluginAPI
-        )).resolves.toStrictEqual(testConfiguration)
+        await expect(PreRender.postConfigurationHotLoaded({
+            configuration: testConfiguration,
+            hook: 'postConfigurationLoaded',
+            plugins: [],
+            pluginsWithChangedConfiguration: [],
+            pluginAPI: PluginAPI
+        })).resolves.toBeUndefined()
     })
     // TODO test all methods
 })

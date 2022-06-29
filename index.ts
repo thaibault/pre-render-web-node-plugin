@@ -25,9 +25,9 @@ import {
 import path from 'path'
 import removeDirectoryRecursively from 'rimraf'
 import {PluginAPI} from 'web-node'
-import {Plugin, PluginHandler} from 'web-node/type'
+import {ChangedConfigurationState, Plugin, PluginHandler} from 'web-node/type'
 
-import {Configuration, Services} from './type'
+import {Configuration, Services, ServicesState, State} from './type'
 // endregion
 /**
  * Provides a pre-rendering hook for webNode applications.
@@ -37,65 +37,71 @@ export class PreRender implements PluginHandler {
     /**
      * Triggered hook when at least one plugin has a new configuration file and
      * configuration object has been changed.
-     * @param configuration - Updated configuration object.
-     * @param pluginsWithChangedConfiguration - List of plugins which have a
-     * changed plugin configuration.
-     * @param plugins - List of all loaded plugins.
-     * @param pluginAPI - Plugin api reference.
+     * @param state - Application state.
      *
-     * @returns New configuration object to use.
+     * @returns Promise resolving to nothing.
      */
-    static async postConfigurationLoaded(
-        configuration:Configuration,
-        pluginsWithChangedConfiguration:Array<Plugin>,
-        plugins:Array<Plugin>,
-        pluginAPI:typeof PluginAPI
-    ):Promise<Configuration> {
-        if (configuration.preRender.renderAfterConfigurationUpdates)
-            await PreRender.render(configuration, plugins, pluginAPI)
-
-        return configuration
+    static async postConfigurationHotLoaded(
+        state:ChangedConfigurationState
+    ):Promise<void> {
+        if (
+            (state as unknown as State)
+                .configuration.preRender?.renderAfterConfigurationUpdates &&
+            ((state as unknown as State).services as Partial<Services>)
+                .preRender?.render
+        )
+            await (state as unknown as State).services.preRender.render(
+                state as unknown as State
+            )
     }
     /**
      * Appends an pre-renderer to the web node services.
-     * @param services - An object with stored service instances.
+     * @param state - Application state.
      *
-     * @returns Given and extended object of services.
+     * @returns Promise resolving to nothing.
      */
-    static preLoadService(services:Services):Services {
+    static async preLoadService(state:ServicesState):Promise<void> {
+        const {configuration: {preRender: configuration}, services} = state
+
         services.preRender = {
             getPrerenderedOutputDirectories:
                 PreRender.getPrerenderedOutputDirectories.bind(PreRender),
             getPrerendererExecuter:
                 PreRender.getPrerendererExecuter.bind(PreRender),
+
             render: PreRender.render.bind(PreRender),
             renderFile: PreRender.renderFile.bind(PreRender)
         }
 
-        return services
+        if (configuration.renderAfterConfigurationUpdates)
+            await services.preRender.render(state as unknown as State)
     }
     /**
      * Triggers when application will be closed soon and removes created files.
-     * @param services - An object with stored service instances.
-     * @param configuration - Updated configuration object.
-     * @param plugins - List of all loaded plugins.
-     * @param pluginAPI - Plugin api reference.
+     * @param state - Application state.
+     * @param state.configuration - Applications configuration.
+     * @param state.pluginAPI - Applications plugin api.
+     * @param state.plugins - Applications plugins.
+     * @param state.services - Applications services.
      *
-     * @returns Given object of services.
+     * @returns Promise resolving to nothing.
      */
     static async shouldExit(
-        services:Services,
-        configuration:Configuration,
-        plugins:Array<Plugin>,
-        pluginAPI:typeof PluginAPI
-    ):Promise<Services> {
+        {configuration, pluginAPI, plugins, services}:State
+    ):Promise<void> {
+        if (!services.preRender?.getPrerenderedOutputDirectories)
+            return
+
         const preRenderOutputRemoveingPromises:Array<Promise<void>> = []
 
-        for (const file of await PreRender.getPrerenderedOutputDirectories(
-            configuration, plugins, pluginAPI
-        ))
+        for (
+            const file of
+            await services.preRender.getPrerenderedOutputDirectories(
+                configuration, plugins, pluginAPI
+            )
+        )
             preRenderOutputRemoveingPromises.push(new Promise<void>((
-                resolve:() => void, reject:(_reason:Error) => void
+                resolve:() => void, reject:(reason:Error) => void
             ):void =>
                 removeDirectoryRecursively(
                     file.path,
@@ -106,8 +112,6 @@ export class PreRender implements PluginHandler {
             ))
 
         await Promise.all(preRenderOutputRemoveingPromises)
-
-        return services
     }
     // endregion
     // region helper
@@ -213,49 +217,57 @@ export class PreRender implements PluginHandler {
     }
     /**
      * Triggers pre-rendering.
-     * @param configuration - Configuration object.
-     * @param plugins - List of all loaded plugins.
-     * @param pluginAPI - Plugin api reference.
-     * @param additionalCLIParameter - List of additional cli parameter to use.
+     * @param state - Application state.
      *
-     * @returns A Promise resolving to a list of prerenderer files.
+     * @returns A Promise resolving to nothing.
      */
     static async render(
-        configuration:Configuration,
-        plugins:Array<Plugin>,
-        pluginAPI:typeof PluginAPI,
-        additionalCLIParameter:Array<string>|string = []
-    ):Promise<Array<File>> {
-        const preRendererFiles:Array<File> = await pluginAPI.callStack(
-            'prePreRendererRender',
-            plugins,
-            configuration,
-            await PreRender.getPrerendererExecuter(
-                configuration, plugins, pluginAPI
-            )
-        )
-        const preRenderingPromises:Array<Promise<ProcessCloseReason>> = []
+        state:State<Array<string>|string|undefined>
+    ):Promise<void> {
+        const {configuration, pluginAPI, plugins} = state
+        const additionalCLIParameters:Array<string> =
+            ([] as Array<string>).concat(state.data ?? [])
 
+        const preRendererFiles:Array<File> = await pluginAPI.callStack<
+            State<Array<File>>, Array<File>
+        >({
+            ...state,
+            data: await PreRender.getPrerendererExecuter(
+                configuration, plugins, pluginAPI
+            ),
+            hook: 'prePreRendererRender'
+        })
+
+        const preRenderingPromises:Array<Promise<ProcessCloseReason>> = []
         for (const file of preRendererFiles)
             preRenderingPromises.push(PreRender.renderFile(
                 file.path,
-                [].concat(await pluginAPI.callStack(
-                    'prePreRendererCLIParameter',
-                    plugins,
-                    configuration,
-                    ([] as Array<string>).concat(
-                        additionalCLIParameter,
-                        `${String(configuration.preRender.cache)}`
-                    ),
-                    file
-                ))
+                ([] as Array<string>).concat(await pluginAPI.callStack<
+                    State<{
+                        file:File,
+                        parameters:Array<string>
+                    }>,
+                    Array<string>|string
+                >({
+                    ...state,
+                    hook: 'prePreRendererCLIParameter',
+                    data: {
+                        file,
+                        parameters: ([] as Array<string>).concat(
+                            additionalCLIParameters,
+                            `${String(configuration.preRender.cache)}`
+                        )
+                    }
+                }))
             ))
 
         await Promise.all(preRenderingPromises)
 
-        return await pluginAPI.callStack(
-            'postPreRendererRender', plugins, configuration, preRendererFiles
-        )
+        await pluginAPI.callStack<State<Array<File>>>({
+            ...state,
+            data: preRendererFiles,
+            hook: 'postPreRendererRender'
+        })
     }
     /**
      * Executes given pre-renderer file.
