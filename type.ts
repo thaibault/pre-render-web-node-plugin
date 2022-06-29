@@ -20,7 +20,10 @@ import {
     Configuration as BaseConfiguration,
     Plugin,
     PluginHandler as BasePluginHandler,
-    Services as BaseServices
+    ServicePromises,
+    ServicePromisesState as BaseServicePromisesState,
+    Services as BaseServices,
+    ServicesState as BaseServicesState
 } from 'web-node/type'
 // endregion
 // region exports
@@ -48,79 +51,60 @@ export type Services<ServiceType = Mapping<unknown>> =
     BaseServices<{
         preRender:{
             getPrerenderedOutputDirectories:(
-                _configuration:Configuration,
-                _plugins:Array<Plugin>,
-                _pluginAPI:typeof PluginAPI
+                configuration:Configuration,
+                plugins:Array<Plugin>,
+                pluginAPI:typeof PluginAPI
             ) => Promise<Array<File>>
             getPrerendererExecuter:(
-                _configuration:Configuration,
-                _plugins:Array<Plugin>,
-                _pluginAPI:typeof PluginAPI
+                configuration:Configuration,
+                plugins:Array<Plugin>,
+                pluginAPI:typeof PluginAPI
             ) => Promise<Array<File>>
-            render:(
-                _configuration:Configuration,
-                _plugins:Array<Plugin>,
-                _pluginAPI:typeof PluginAPI,
-                _additionalCLIParameter?:Array<string>|string
-            ) => Promise<Array<File>>
-            renderFile:(_filePath:string, _cliParameter?:Array<string>) =>
+
+            render:(state:State<Array<string>|string|undefined>) =>
+                Promise<void>
+            renderFile:(filePath:string, cliParameter?:Array<string>) =>
                 Promise<ProcessCloseReason>
         }
     }> &
     ServiceType
 
+export type ServicesState = BaseServicesState<
+    undefined, Configuration, Services
+>
+export type State<Type = undefined> = BaseServicePromisesState<
+    Type,
+    Configuration,
+    Services,
+    ServicePromises
+>
+
 export interface PluginHandler extends BasePluginHandler {
     /**
      * Hook before pre-rendering starts. List of executer can be modified.
-     * @param _preRendererFiles - List of files which pre-renders something.
-     * @param _configuration - Configuration object extended by each plugin
-     * specific configuration.
-     * @param _plugins - Topological sorted list of plugins.
-     * @param _pluginAPI - Plugin api reference.
+     * @param state - Application state.
      *
-     * @returns Given entry files.
+     * @returns Promise resolving to entry files.
      */
-    prePreRendererRender?(
-        _preRendererFiles:Array<File>,
-        _configuration:Configuration,
-        _plugins:Array<Plugin>,
-        _pluginAPI:typeof PluginAPI
-    ):Promise<Array<File>>
+    prePreRendererRender?(state:State<Array<File>>):Promise<Array<File>>
     /**
      * Hook before a pre-renderer will be called. CLI-Parameter can be
      * modified.
-     * @param _cliParameters - List of cli parameter provided to pre-renderers.
-     * @param _file - Executer file to execute with provided cli parameter.
-     * @param _configuration - Configuration object extended by each plugin
-     * specific configuration.
-     * @param _plugins - Topological sorted list of plugins.
-     * @param _pluginAPI - Plugin api reference.
+     * @param state - Application state.
      *
-     * @returns Given entry files.
+     * @returns Promise resolving to cli arguments.
      */
-    prePreRendererCLIParameter?(
-        _cliParameters:Array<string>,
-        _file:File,
-        _configuration:Configuration,
-        _plugins:Array<Plugin>,
-        _pluginAPI:typeof PluginAPI
-    ):Promise<Array<string>>
+    prePreRendererCLIParameter?(state:State<{
+        file:File
+        parameters:Array<string>
+    }>):Promise<Array<string>>
     /**
      * Hook after a pre-renderer has been called.
-     * @param _preRendererFiles - List of files which pre-renders something.
-     * @param _configuration - Configuration object extended by each plugin
-     * specific configuration.
-     * @param _plugins - Topological sorted list of plugins.
-     * @param _pluginAPI - Plugin api reference.
+     * @param state - Application state.
      *
-     * @returns Given entry files.
+     * @returns Promise resolving to nothing.
      */
-    postPreRendererRender?(
-        _preRendererFiles:Array<File>,
-        _configuration:Configuration,
-        _plugins:Array<Plugin>,
-        _pluginAPI:typeof PluginAPI
-    ):Promise<Array<File>>
+    postPreRendererRender?(state:State<Array<File>>):Promise<void>
 }
 // endregion
 // region vim modline
