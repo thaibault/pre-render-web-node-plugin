@@ -102,7 +102,12 @@
             "src",
             "source"
           ],
-          "fileNames": "preRender.js",
+          "fileNames": [
+            "pre-render.js",
+            "pre-renderer.js",
+            "preRender.js",
+            "preRenderer.js"
+          ],
           "include": []
         },
         "output": {
