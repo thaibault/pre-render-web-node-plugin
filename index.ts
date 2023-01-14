@@ -100,16 +100,9 @@ export class PreRender implements PluginHandler {
                 configuration, plugins, pluginAPI
             )
         )
-            preRenderOutputRemoveingPromises.push(new Promise<void>((
-                resolve:() => void, reject:(reason:Error) => void
-            ):void =>
-                removeDirectoryRecursively(
-                    file.path,
-                    {glob: false},
-                    (error?:Error|null):void =>
-                        error ? reject(error) : resolve()
-                )
-            ))
+            preRenderOutputRemoveingPromises.push(
+                removeDirectoryRecursively(file.path)
+            )
 
         await Promise.all(preRenderOutputRemoveingPromises)
     }
