@@ -103,7 +103,7 @@ export class PreRender implements PluginHandler {
             preRenderOutputRemoveingPromises.push(
                 removeDirectoryRecursively(file.path)
                     .then(():void => {
-                        return
+                        // Do nothing.
                     })
             )
 
