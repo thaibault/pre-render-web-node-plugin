@@ -23,7 +23,7 @@ import {
     File, ProcessCloseCallback, ProcessCloseReason, ProcessErrorCallback
 } from 'clientnode/type'
 import path from 'path'
-import removeDirectoryRecursively from 'rimraf'
+import {rimraf as removeDirectoryRecursively} from 'rimraf'
 import {PluginAPI} from 'web-node'
 import {ChangedConfigurationState, Plugin, PluginHandler} from 'web-node/type'
 
