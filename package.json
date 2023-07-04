@@ -1,6 +1,6 @@
 {
   "name": "prerenderwebnodeplugin",
-  "version": "1.0.283",
+  "version": "1.0.284",
   "description": "Pre-rendering hook for web-node applications.",
   "keywords": [
     "web",
