@@ -14,7 +14,7 @@
     endregion
 */
 // region imports
-import {File, Mapping, ProcessCloseReason} from 'clientnode/type'
+import {File, Mapping, ProcessCloseReason} from 'clientnode'
 import {PluginAPI} from 'web-node'
 import {
     Configuration as BaseConfiguration,
@@ -83,7 +83,6 @@ export interface PluginHandler extends BasePluginHandler {
     /**
      * Hook before pre-rendering starts. List of executer can be modified.
      * @param state - Application state.
-     *
      * @returns Promise resolving to entry files.
      */
     prePreRendererRender?(state:State<Array<File>>):Promise<Array<File>>
@@ -91,7 +90,6 @@ export interface PluginHandler extends BasePluginHandler {
      * Hook before a pre-renderer will be called. CLI-Parameter can be
      * modified.
      * @param state - Application state.
-     *
      * @returns Promise resolving to cli arguments.
      */
     prePreRendererCLIParameter?(state:State<{
@@ -101,13 +99,8 @@ export interface PluginHandler extends BasePluginHandler {
     /**
      * Hook after a pre-renderer has been called.
      * @param state - Application state.
-     *
      * @returns Promise resolving to nothing.
      */
     postPreRendererRender?(state:State<Array<File>>):Promise<void>
 }
-// endregion
-// region vim modline
-// vim: set tabstop=4 shiftwidth=4 expandtab:
-// vim: foldmethod=marker foldmarker=region,endregion:
 // endregion
