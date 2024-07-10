@@ -15,8 +15,7 @@
 */
 // region imports
 import {beforeAll, describe, expect, test} from '@jest/globals'
-import Tools from 'clientnode'
-import {RecursivePartial} from 'clientnode/type'
+import {copy, extend, RecursivePartial} from 'clientnode'
 import {configuration as baseConfiguration, PluginAPI} from 'web-node'
 
 import PreRender from './index'
@@ -27,14 +26,14 @@ describe('preRender', ():void => {
     let configuration:Configuration
     beforeAll(async ():Promise<void> => {
         configuration =
-            (await PluginAPI.loadAll(Tools.copy(baseConfiguration)))
+            (await PluginAPI.loadAll(copy(baseConfiguration)))
                 .configuration as Configuration
     })
     // endregion
     test('postConfigurationLoaded', async ():Promise<void> => {
-        const testConfiguration:Configuration = Tools.extend<Configuration>(
+        const testConfiguration:Configuration = extend<Configuration>(
             true,
-            Tools.copy(configuration),
+            copy(configuration),
             {preRender: {renderAfterConfigurationUpdates: false}} as
                 RecursivePartial<Configuration>
         )

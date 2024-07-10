@@ -18,10 +18,15 @@
 */
 // region imports
 import {ChildProcess, spawn as spawnChildProcess} from 'child_process'
-import Tools, {CloseEventNames} from 'clientnode'
 import {
-    File, ProcessCloseCallback, ProcessCloseReason, ProcessErrorCallback
-} from 'clientnode/type'
+    CLOSE_EVENT_NAMES,
+    File,
+    getProcessCloseHandler,
+    ProcessCloseCallback,
+    ProcessCloseReason,
+    ProcessErrorCallback,
+    walkDirectoryRecursively
+} from 'clientnode'
 import path from 'path'
 import {rimraf as removeDirectoryRecursively} from 'rimraf'
 import {PluginAPI} from 'web-node'
@@ -38,7 +43,6 @@ export class PreRender implements PluginHandler {
      * Triggered hook when at least one plugin has a new configuration file and
      * configuration object has been changed.
      * @param state - Application state.
-     *
      * @returns Promise resolving to nothing.
      */
     static async postConfigurationHotLoaded(
@@ -55,9 +59,8 @@ export class PreRender implements PluginHandler {
             )
     }
     /**
-     * Appends an pre-renderer to the web node services.
+     * Appends a pre-renderer to the web node services.
      * @param state - Application state.
-     *
      * @returns Promise resolving to nothing.
      */
     static async preLoadService(state:ServicesState):Promise<void> {
@@ -83,7 +86,6 @@ export class PreRender implements PluginHandler {
      * @param state.pluginAPI - Applications plugin api.
      * @param state.plugins - Applications plugins.
      * @param state.services - Applications services.
-     *
      * @returns Promise resolving to nothing.
      */
     static async shouldExit(
@@ -92,7 +94,7 @@ export class PreRender implements PluginHandler {
         if (!services.preRender?.getPrerenderedOutputDirectories)
             return
 
-        const preRenderOutputRemoveingPromises:Array<Promise<void>> = []
+        const preRenderOutputRemovingPromises:Array<Promise<void>> = []
 
         for (
             const file of
@@ -100,14 +102,14 @@ export class PreRender implements PluginHandler {
                 configuration, plugins, pluginAPI
             )
         )
-            preRenderOutputRemoveingPromises.push(
+            preRenderOutputRemovingPromises.push(
                 removeDirectoryRecursively(file.path)
                     .then(():void => {
                         // Do nothing.
                     })
             )
 
-        await Promise.all(preRenderOutputRemoveingPromises)
+        await Promise.all(preRenderOutputRemovingPromises)
     }
     // endregion
     // region helper
@@ -116,7 +118,6 @@ export class PreRender implements PluginHandler {
      * @param configuration - Updated configuration object.
      * @param plugins - List of all loaded plugins.
      * @param pluginAPI - Plugin api reference.
-     *
      * @returns A promise holding all resolved file objects.
      */
     static async getPrerenderedOutputDirectories(
@@ -139,7 +140,7 @@ export class PreRender implements PluginHandler {
         const result:Array<File> = []
         for (const location of preRendererPaths)
             result.concat(
-                (await Tools.walkDirectoryRecursively(
+                (await walkDirectoryRecursively(
                     location,
                     (file:File):false|void => {
                         if (
@@ -169,7 +170,6 @@ export class PreRender implements PluginHandler {
      * @param configuration - Updated configuration object.
      * @param plugins - List of all loaded plugins.
      * @param pluginAPI - Plugin api reference.
-     *
      * @returns A promise holding all resolved file objects.
      */
     static async getPrerendererExecuter(
@@ -185,7 +185,7 @@ export class PreRender implements PluginHandler {
         for (const location of pluginAPI.determineLocations(
             configuration, configuration.preRender.locations.executer.include
         ))
-            (await Tools.walkDirectoryRecursively(
+            (await walkDirectoryRecursively(
                 location,
                 (file:File):false|void => {
                     if (
@@ -214,7 +214,6 @@ export class PreRender implements PluginHandler {
     /**
      * Triggers pre-rendering.
      * @param state - Application state.
-     *
      * @returns A Promise resolving to nothing.
      */
     static async render(
@@ -269,7 +268,6 @@ export class PreRender implements PluginHandler {
      * Executes given pre-renderer file.
      * @param filePath - File path to execute as pre-renderer.
      * @param cliParameter - List of cli parameter to use.
-     *
      * @returns A promise resolving after pre-rendering has finished.
      */
     static renderFile(
@@ -289,17 +287,12 @@ export class PreRender implements PluginHandler {
                 }
             )
 
-            for (const closeEventName of CloseEventNames)
+            for (const closeEventName of CLOSE_EVENT_NAMES)
                 childProcess.on(
-                    closeEventName,
-                    Tools.getProcessCloseHandler(resolve, reject)
+                    closeEventName, getProcessCloseHandler(resolve, reject)
                 )
         })
     }
     // endregion
 }
 export default PreRender
-// region vim modline
-// vim: set tabstop=4 shiftwidth=4 expandtab:
-// vim: foldmethod=marker foldmarker=region,endregion:
-// endregion
