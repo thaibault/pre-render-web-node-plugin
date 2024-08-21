@@ -15,7 +15,7 @@
 */
 // region imports
 import {File, Mapping, ProcessCloseReason} from 'clientnode'
-import {PluginAPI} from 'web-node'
+import {pluginAPI as pluginAPIType} from 'web-node'
 import {
     Configuration as BaseConfiguration,
     Plugin,
@@ -53,12 +53,12 @@ export type Services<ServiceType = Mapping<unknown>> =
             getPrerenderedOutputDirectories:(
                 configuration:Configuration,
                 plugins:Array<Plugin>,
-                pluginAPI:typeof PluginAPI
+                pluginAPI:typeof pluginAPIType
             ) => Promise<Array<File>>
             getPrerendererExecuter:(
                 configuration:Configuration,
                 plugins:Array<Plugin>,
-                pluginAPI:typeof PluginAPI
+                pluginAPI:typeof pluginAPIType
             ) => Promise<Array<File>>
 
             render:(state:State<Array<string>|string|undefined>) =>

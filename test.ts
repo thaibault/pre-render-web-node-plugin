@@ -16,9 +16,9 @@
 // region imports
 import {beforeAll, describe, expect, test} from '@jest/globals'
 import {copy, extend, RecursivePartial} from 'clientnode'
-import {configuration as baseConfiguration, PluginAPI} from 'web-node'
+import {configuration as baseConfiguration, loadAll, pluginAPI} from 'web-node'
 
-import PreRender from './index'
+import {postConfigurationHotLoaded} from './index'
 import {Configuration} from './type'
 // endregion
 describe('preRender', ():void => {
@@ -26,8 +26,8 @@ describe('preRender', ():void => {
     let configuration:Configuration
     beforeAll(async ():Promise<void> => {
         configuration =
-            (await PluginAPI.loadAll(copy(baseConfiguration)))
-                .configuration as Configuration
+            (await loadAll(copy(baseConfiguration))).configuration as
+                Configuration
     })
     // endregion
     test('postConfigurationLoaded', async ():Promise<void> => {
@@ -38,12 +38,12 @@ describe('preRender', ():void => {
                 RecursivePartial<Configuration>
         )
 
-        await expect(PreRender.postConfigurationHotLoaded({
+        await expect(postConfigurationHotLoaded({
             configuration: testConfiguration,
             hook: 'postConfigurationLoaded',
             plugins: [],
             pluginsWithChangedConfiguration: [],
-            pluginAPI: PluginAPI
+            pluginAPI
         })).resolves.toBeUndefined()
     })
     // TODO test all methods
