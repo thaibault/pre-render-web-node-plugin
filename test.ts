@@ -21,17 +21,17 @@ import {configuration as baseConfiguration, loadAll, pluginAPI} from 'web-node'
 import {postConfigurationHotLoaded} from './index'
 import {Configuration} from './type'
 // endregion
-describe('preRender', ():void => {
+describe('preRender', (): void => {
     // region mockup
-    let configuration:Configuration
-    beforeAll(async ():Promise<void> => {
+    let configuration: Configuration
+    beforeAll(async (): Promise<void> => {
         configuration =
             (await loadAll(copy(baseConfiguration))).configuration as
                 Configuration
     })
     // endregion
-    test('postConfigurationLoaded', async ():Promise<void> => {
-        const testConfiguration:Configuration = extend<Configuration>(
+    test('postConfigurationLoaded', async (): Promise<void> => {
+        const testConfiguration: Configuration = extend<Configuration>(
             true,
             copy(configuration),
             {preRender: {renderAfterConfigurationUpdates: false}} as

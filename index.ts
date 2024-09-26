@@ -45,8 +45,8 @@ import {Configuration, Services, ServicesState, State} from './type'
  * @returns Promise resolving to nothing.
  */
 export const postConfigurationHotLoaded = async (
-    state:ChangedConfigurationState
-):Promise<void> => {
+    state: ChangedConfigurationState
+): Promise<void> => {
     if (
         (state as unknown as State)
             .configuration.preRender.renderAfterConfigurationUpdates &&
@@ -62,7 +62,7 @@ export const postConfigurationHotLoaded = async (
  * @param state - Application state.
  * @returns Promise resolving to nothing.
  */
-export const preLoadService = async (state:ServicesState):Promise<void> => {
+export const preLoadService = async (state: ServicesState): Promise<void> => {
     const {configuration: {preRender: configuration}, services} = state
 
     services.preRender = {
@@ -86,14 +86,14 @@ export const preLoadService = async (state:ServicesState):Promise<void> => {
  * @returns Promise resolving to nothing.
  */
 export const shouldExit = async (
-    {configuration, pluginAPI, plugins, services}:State
-):Promise<void> => {
+    {configuration, pluginAPI, plugins, services}: State
+): Promise<void> => {
     if (!Object.prototype.hasOwnProperty.call(
         services.preRender, 'getPrerenderedOutputDirectories'
     ))
         return
 
-    const preRenderOutputRemovingPromises:Array<Promise<void>> = []
+    const preRenderOutputRemovingPromises: Array<Promise<void>> = []
 
     for (
         const file of
@@ -119,29 +119,29 @@ export const shouldExit = async (
  * @returns A promise holding all resolved file objects.
  */
 export const getPrerenderedOutputDirectories = async (
-    configuration:Configuration,
-    plugins:Array<Plugin>,
-    pluginAPI:typeof pluginAPIType
-):Promise<Array<File>> => {
-    const directoryNames:Array<string> = ([] as Array<string>).concat(
+    configuration: Configuration,
+    plugins: Array<Plugin>,
+    pluginAPI: typeof pluginAPIType
+): Promise<Array<File>> => {
+    const directoryNames: Array<string> = ([] as Array<string>).concat(
         configuration.preRender.locations.output.directoryNames
     )
-    const excludePaths:Array<string> = ([] as Array<string>).concat(
+    const excludePaths: Array<string> = ([] as Array<string>).concat(
         configuration.preRender.locations.output.exclude
     )
-    const preRendererPaths:Array<string> =
+    const preRendererPaths: Array<string> =
         (await getPrerendererExecuter(configuration, plugins, pluginAPI))
-            .map((file:File):string => path.dirname(file.path))
+            .map((file: File): string => path.dirname(file.path))
 
-    const result:Array<File> = []
+    const result: Array<File> = []
     for (const location of preRendererPaths)
         result.concat(
             (await walkDirectoryRecursively(
                 location,
-                (file:File):false|undefined => {
+                (file: File): false|undefined => {
                     if (
                         file.name.startsWith('.') ||
-                        excludePaths.some((excludePath:string):boolean =>
+                        excludePaths.some((excludePath: string): boolean =>
                             file.path.startsWith(
                                 path.resolve(location, excludePath)
                             )
@@ -150,7 +150,7 @@ export const getPrerenderedOutputDirectories = async (
                         return false
                 }
             ))
-                .filter((file:File):boolean => Boolean(
+                .filter((file: File): boolean => Boolean(
                     file.stats?.isDirectory() &&
                     (
                         directoryNames.length === 0 ||
@@ -169,21 +169,21 @@ export const getPrerenderedOutputDirectories = async (
  * @returns A promise holding all resolved file objects.
  */
 export const getPrerendererExecuter = async (
-    configuration:Configuration,
-    plugins:Array<Plugin>,
-    pluginAPI:typeof pluginAPIType
-):Promise<Array<File>> => {
-    const fileNames:Array<string> = ([] as Array<string>).concat(
+    configuration: Configuration,
+    plugins: Array<Plugin>,
+    pluginAPI: typeof pluginAPIType
+): Promise<Array<File>> => {
+    const fileNames: Array<string> = ([] as Array<string>).concat(
         configuration.preRender.locations.executer.fileNames
     )
 
-    const result:Array<File> = []
+    const result: Array<File> = []
     for (const location of pluginAPI.determineLocations(
         configuration, configuration.preRender.locations.executer.include
     ))
         (await walkDirectoryRecursively(
             location,
-            (file:File):false|undefined => {
+            (file: File): false|undefined => {
                 if (
                     file.name.startsWith('.') ||
                     pluginAPI.isInLocations(
@@ -197,7 +197,7 @@ export const getPrerendererExecuter = async (
                     return false
             }
         ))
-            .map((file:File) => {
+            .map((file: File) => {
                 if (
                     file.stats?.isFile() &&
                     fileNames.includes(path.basename(file.name))
@@ -213,13 +213,13 @@ export const getPrerendererExecuter = async (
  * @returns A Promise resolving to nothing.
  */
 export const render = async (
-    state:State<Array<string>|string|undefined>
-):Promise<void> => {
+    state: State<Array<string>|string|undefined>
+): Promise<void> => {
     const {configuration, pluginAPI, plugins} = state
-    const additionalCLIParameters:Array<string> =
+    const additionalCLIParameters: Array<string> =
         ([] as Array<string>).concat(state.data ?? [])
 
-    const preRendererFiles:Array<File> = await pluginAPI.callStack<
+    const preRendererFiles: Array<File> = await pluginAPI.callStack<
         State<Array<File>>, Array<File>
     >({
         ...state,
@@ -227,14 +227,14 @@ export const render = async (
         hook: 'prePreRendererRender'
     })
 
-    const preRenderingPromises:Array<Promise<ProcessCloseReason>> = []
+    const preRenderingPromises: Array<Promise<ProcessCloseReason>> = []
     for (const file of preRendererFiles)
         preRenderingPromises.push(renderFile(
             file.path,
             ([] as Array<string>).concat(await pluginAPI.callStack<
                 State<{
-                    file:File,
-                    parameters:Array<string>
+                    file: File,
+                    parameters: Array<string>
                 }>,
                 Array<string>|string
             >({
@@ -265,12 +265,12 @@ export const render = async (
  * @returns A promise resolving after pre-rendering has finished.
  */
 export const renderFile = (
-    filePath:string, cliParameter:Array<string> = []
-):Promise<ProcessCloseReason> => {
+    filePath: string, cliParameter: Array<string> = []
+): Promise<ProcessCloseReason> => {
     return new Promise<ProcessCloseReason>((
-        resolve:ProcessCloseCallback, reject:ProcessErrorCallback
+        resolve: ProcessCloseCallback, reject: ProcessErrorCallback
     ) => {
-        const childProcess:ChildProcess = spawnChildProcess(
+        const childProcess: ChildProcess = spawnChildProcess(
             filePath,
             cliParameter,
             {
