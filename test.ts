@@ -40,6 +40,7 @@ describe('preRender', (): void => {
 
         await expect(postConfigurationHotLoaded({
             configuration: testConfiguration,
+            data: undefined,
             hook: 'postConfigurationLoaded',
             plugins: [],
             pluginsWithChangedConfiguration: [],
