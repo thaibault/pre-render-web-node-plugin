@@ -138,7 +138,7 @@ export const getPrerenderedOutputDirectories = async (
         result.concat(
             (await walkDirectoryRecursively(
                 location,
-                (file: File): false|undefined => {
+                (file: File): false | undefined => {
                     if (
                         file.name.startsWith('.') ||
                         excludePaths.some((excludePath: string): boolean =>
@@ -183,7 +183,7 @@ export const getPrerendererExecuter = async (
     ))
         (await walkDirectoryRecursively(
             location,
-            (file: File): false|undefined => {
+            (file: File): false | undefined => {
                 if (
                     file.name.startsWith('.') ||
                     pluginAPI.isInLocations(
@@ -213,7 +213,7 @@ export const getPrerendererExecuter = async (
  * @returns A Promise resolving to nothing.
  */
 export const render = async (
-    state: State<Array<string>|string|undefined>
+    state: State<Array<string> | string | undefined>
 ): Promise<void> => {
     const {configuration, pluginAPI, plugins} = state
     const additionalCLIParameters: Array<string> =
@@ -236,7 +236,7 @@ export const render = async (
                     file: File,
                     parameters: Array<string>
                 }>,
-                Array<string>|string
+                Array<string> | string
             >({
                 ...state,
                 hook: 'prePreRendererCLIParameter',

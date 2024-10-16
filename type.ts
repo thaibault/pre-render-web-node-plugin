@@ -33,13 +33,13 @@ export type Configuration<ConfigurationType = Mapping<unknown>> =
             cache: boolean
             locations: {
                 executer: {
-                    exclude: Array<string>|string
-                    include: Array<string>|string
-                    fileNames: Array<string>|string
+                    exclude: Array<string> | string
+                    include: Array<string> | string
+                    fileNames: Array<string> | string
                 }
                 output: {
-                    directoryNames: Array<string>|string
-                    exclude: Array<string>|string
+                    directoryNames: Array<string> | string
+                    exclude: Array<string> | string
                 }
             }
             renderAfterConfigurationUpdates: boolean
@@ -61,7 +61,7 @@ export type Services<ServiceType = Mapping<unknown>> =
                 pluginAPI: typeof pluginAPIType
             ) => Promise<Array<File>>
 
-            render: (state: State<Array<string>|string|undefined>) =>
+            render: (state: State<Array<string> | string | undefined>) =>
                 Promise<void>
             renderFile: (filePath: string, cliParameter?: Array<string>) =>
                 Promise<ProcessCloseReason>
