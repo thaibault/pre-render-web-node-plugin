@@ -219,24 +219,25 @@ export const render = async (
     const additionalCLIParameters: Array<string> =
         ([] as Array<string>).concat(state.data ?? [])
 
-    const preRendererFiles: Array<File> = await pluginAPI.callStack<
+    const preRendererFiles = await pluginAPI.callStack<
         State<Array<File>>, Array<File>
     >({
         ...state,
         data: await getPrerendererExecuter(configuration, plugins, pluginAPI),
         hook: 'prePreRendererRender'
-    })
+    }) as Array<File>
+
+    interface CLIParameters {
+        file: File
+        parameters: Array<string>
+    }
 
     const preRenderingPromises: Array<Promise<ProcessCloseReason>> = []
     for (const file of preRendererFiles)
         preRenderingPromises.push(renderFile(
             file.path,
             ([] as Array<string>).concat(await pluginAPI.callStack<
-                State<{
-                    file: File,
-                    parameters: Array<string>
-                }>,
-                Array<string> | string
+                State<CLIParameters>, Array<string> | string
             >({
                 ...state,
                 hook: 'prePreRendererCLIParameter',
@@ -247,7 +248,7 @@ export const render = async (
                         String(configuration.preRender.cache)
                     )
                 }
-            }))
+            }) as Array<string>)
         ))
 
     await Promise.all(preRenderingPromises)
