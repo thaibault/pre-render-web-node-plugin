@@ -64,7 +64,7 @@
     "jsdoc": "^4.0.5",
     "rimraf": "^6.1.0",
     "typescript-eslint": "^8.46.4",
-    "web-node": "^1.0.553",
+    "web-node": "^1.0.554",
     "weboptimizer": "^2.0.1620"
   },
   "peerDependencies": {

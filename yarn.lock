@@ -8980,7 +8980,7 @@ __metadata:
     jsdoc: "npm:^4.0.5"
     rimraf: "npm:^6.1.0"
     typescript-eslint: "npm:^8.46.4"
-    web-node: "npm:^1.0.553"
+    web-node: "npm:^1.0.554"
     weboptimizer: "npm:^2.0.1620"
   peerDependencies:
     "@babel/runtime": "*"
@@ -10486,9 +10486,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"web-node@npm:^1.0.553":
-  version: 1.0.553
-  resolution: "web-node@npm:1.0.553"
+"web-node@npm:^1.0.554":
+  version: 1.0.554
+  resolution: "web-node@npm:1.0.554"
   peerDependencies:
     "@babel/runtime": "*"
     clientnode: "*"
@@ -10497,7 +10497,7 @@ __metadata:
       optional: true
   bin:
     web-node: index.js
-  checksum: 10c0/7121b5cdbff8dad0113d800a54695664612b490e28412633387f6b1775ffea6c19a4c9f0ae5004aa8f78946ec6296b293d941b38be5f9521f19198a2dae29780
+  checksum: 10c0/3d8324e7acbb298f3f2848d049414acc7f9633255798fac84d3a9b3daac4fc411e05ddd27f44cfd4f874c36623d5d552727c76008e0eea17ead3358cf8badc3a
   languageName: node
   linkType: hard
 
