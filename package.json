@@ -50,6 +50,7 @@
   "devDependencies": {
     "@babel/eslint-parser": "^7.28.6",
     "@babel/runtime": "^7.28.6",
+    "@eslint/js": "^10.0.1",
     "@stylistic/eslint-plugin": "^5.10.0",
     "@types/node": "^25.5.0",
     "@types/rimraf": "^4.0.5",
