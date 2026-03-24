@@ -253,11 +253,13 @@ export const render = async (
 
     await Promise.all(preRenderingPromises)
 
+    /* eslint-disable @typescript-eslint/no-unnecessary-type-arguments */
     await pluginAPI.callStack<State<Array<File>>>({
         ...state,
         data: preRendererFiles,
         hook: 'postPreRendererRender'
     })
+    /* eslint-enable @typescript-eslint/no-unnecessary-type-arguments */
 }
 /**
  * Executes given pre-renderer file.

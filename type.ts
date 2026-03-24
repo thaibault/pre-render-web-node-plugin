@@ -20,7 +20,6 @@ import {
     Configuration as BaseConfiguration,
     Plugin,
     PluginHandler as BasePluginHandler,
-    ServicePromises,
     ServicePromisesState as BaseServicePromisesState,
     Services as BaseServices,
     ServicesState as BaseServicesState
@@ -72,12 +71,8 @@ export type Services<ServiceType = Mapping<unknown>> =
 export type ServicesState = BaseServicesState<
     undefined, Configuration, Services
 >
-export type State<Type = undefined> = BaseServicePromisesState<
-    Type,
-    Configuration,
-    Services,
-    ServicePromises
->
+export type State<Type = undefined> =
+    BaseServicePromisesState<Type, Configuration, Services>
 
 export interface PluginHandler extends BasePluginHandler {
     /**

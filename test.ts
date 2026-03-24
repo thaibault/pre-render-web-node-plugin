@@ -41,7 +41,7 @@ describe('preRender', (): void => {
     })
     // endregion
     test('postConfigurationLoaded', async (): Promise<void> => {
-        const testConfiguration: Configuration = extend<Configuration>(
+        const testConfiguration: Configuration = extend(
             true,
             copy(configuration),
             {preRender: {renderAfterConfigurationUpdates: false}} as
@@ -58,7 +58,7 @@ describe('preRender', (): void => {
         })).resolves.toBeUndefined()
     })
     test('preLoadService', async (): Promise<void> => {
-        const testConfiguration: Configuration = extend<Configuration>(
+        const testConfiguration: Configuration = extend(
             true,
             copy(configuration),
             {preRender: {renderAfterConfigurationUpdates: false}} as
