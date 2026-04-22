@@ -110,7 +110,7 @@ describe('preRender', (): void => {
             data: undefined,
             hook: 'shouldExit',
             plugins: [],
-            servicePromises: {} as ServicePromises,
+            servicePromises: {},
             services: {preRender: {}} as Services,
             pluginAPI
         })).resolves.toBeUndefined()
