@@ -44,7 +44,7 @@
     "test": "weboptimizer test",
     "test:coverage": "weboptimizer test:coverage",
     "test:coverage:report": "weboptimizer test:coverage:report",
-    "update:documentation": "documentation-website",
+    "update:documentation": "web-documentation",
     "watch": "weboptimizer build --watch"
   },
   "devDependencies": {
@@ -58,7 +58,7 @@
     "@typescript-eslint/eslint-plugin": "^8.57.2",
     "@typescript-eslint/parser": "^8.57.2",
     "clientnode": "^4.0.1364",
-    "documentation-website": "^1.0.401",
+    "web-documentation": "^1.0.0",
     "eslint": "^10.1.0",
     "eslint-config-google": "^0.14.0",
     "eslint-plugin-jsdoc": "^62.8.0",
