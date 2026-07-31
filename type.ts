@@ -14,9 +14,9 @@
     endregion
 */
 // region imports
-import {File, Mapping, ProcessCloseReason} from 'clientnode'
-import {pluginAPI as pluginAPIType} from 'web-node'
-import {
+import type {File, Mapping, ProcessCloseReason} from 'clientnode'
+import type {pluginAPI as pluginAPIType} from 'web-node'
+import type {
     Configuration as BaseConfiguration,
     Plugin,
     PluginHandler as BasePluginHandler,

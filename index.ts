@@ -17,26 +17,24 @@
     endregion
 */
 // region imports
-import {ChildProcess, spawn as spawnChildProcess} from 'child_process'
-import {
-    CLOSE_EVENT_NAMES,
-    File,
-    getProcessCloseHandler,
-    ProcessCloseCallback,
-    ProcessCloseReason,
-    ProcessErrorCallback,
-    walkDirectoryRecursively
+import type {ChildProcess} from 'child_process'
+import type {
+    File, ProcessCloseCallback, ProcessCloseReason, ProcessErrorCallback
 } from 'clientnode'
-import path from 'path'
-import {rimraf as removeDirectoryRecursively} from 'rimraf'
-import {pluginAPI as pluginAPIType} from 'web-node'
-import {ChangedConfigurationState, Plugin, PluginHandler} from 'web-node/type'
+import type {pluginAPI as pluginAPIType} from 'web-node'
+import type {ChangedConfigurationState, Plugin} from 'web-node/type'
 
-import {Configuration, Services, ServicesState, State} from './type'
+import type {
+    Configuration, PluginHandler, Services, ServicesState, State
+} from './type'
+
+import {spawn as spawnChildProcess} from 'child_process'
+import {
+    CLOSE_EVENT_NAMES, getProcessCloseHandler, walkDirectoryRecursively
+} from 'clientnode'
+import {basename, dirname, resolve} from 'path'
+import {rimraf as removeDirectoryRecursively} from 'rimraf'
 // endregion
-/**
- * Provides a pre-rendering hook for webNode applications.
- */
 // region api
 /**
  * Triggered hook when at least one plugin has a new configuration file and
@@ -131,7 +129,7 @@ export const getPrerenderedOutputDirectories = async (
     )
     const preRendererPaths: Array<string> =
         (await getPrerendererExecuter(configuration, plugins, pluginAPI))
-            .map((file: File): string => path.dirname(file.path))
+            .map((file: File): string => dirname(file.path))
 
     const result: Array<File> = []
     for (const location of preRendererPaths)
@@ -143,7 +141,7 @@ export const getPrerenderedOutputDirectories = async (
                         file.name.startsWith('.') ||
                         excludePaths.some((excludePath: string): boolean =>
                             file.path.startsWith(
-                                path.resolve(location, excludePath)
+                                resolve(location, excludePath)
                             )
                         )
                     )
@@ -200,7 +198,7 @@ export const getPrerendererExecuter = async (
             .map((file: File) => {
                 if (
                     file.stats?.isFile() &&
-                    fileNames.includes(path.basename(file.name))
+                    fileNames.includes(basename(file.name))
                 )
                     result.push(file)
             })
@@ -273,7 +271,7 @@ export const renderFile = (
             filePath,
             cliParameter,
             {
-                cwd: path.dirname(filePath),
+                cwd: dirname(filePath),
                 env: process.env,
                 shell: true,
                 stdio: 'inherit'
@@ -288,5 +286,14 @@ export const renderFile = (
 }
 // endregion
 
-export const preRender = module.exports satisfies PluginHandler
+export const preRender = {
+    postConfigurationHotLoaded,
+    preLoadService,
+    shouldExit,
+
+    getPrerenderedOutputDirectories,
+    getPrerendererExecuter,
+    render,
+    renderFile
+} as PluginHandler
 export default preRender
