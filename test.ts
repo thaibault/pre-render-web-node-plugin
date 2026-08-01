@@ -126,7 +126,7 @@ test('renderFile', async (): Promise<void> => {
         unknown as
         typeof childProcess['spawn']
 
-    await expect(renderFile('', [])).resolves.toStrictEqual(
-        {parameters: [], reason: null}
+    await expect(renderFile('node', ['-v'])).resolves.toStrictEqual(
+        {parameters: [null], reason: null}
     )
 })
