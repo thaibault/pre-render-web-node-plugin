@@ -18,19 +18,21 @@
   },
   "license": "CC-BY-3.0",
   "author": {
-    "name": "Torben Sickert",
     "email": "info@torben.website",
+    "name": "Torben Sickert",
     "url": "https://torben.website"
   },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/thaibault/pre-render-web-node-plugin.git"
+  },
+  "type": "module",
   "files": [
     "index.d.ts",
     "index.js",
     "type.d.ts"
   ],
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/thaibault/pre-render-web-node-plugin.git"
-  },
+  "sideEffects": true,
   "scripts": {
     "build": "weboptimizer build:types && weboptimizer build",
     "check": "yarn check:types; yarn lint",
@@ -72,24 +74,21 @@
     "clientnode": "*",
     "web-node": "*"
   },
+  "resolutions": {
+    "colors": "1.4.0",
+    "globals@npm:^11.1.0": "patch:globals@npm%3A11.12.0#~/.yarn/patches/globals-npm-11.12.0-1fa7f41a6c.patch",
+    "globals@npm:^14.0.0": "patch:globals@npm%3A11.12.0#~/.yarn/patches/globals-npm-11.12.0-1fa7f41a6c.patch",
+    "globals@npm:^9.18.0": "patch:globals@npm%3A11.12.0#~/.yarn/patches/globals-npm-11.12.0-1fa7f41a6c.patch"
+  },
   "engines": {
     "node": ">=24",
     "npm": ">=11",
     "yarn": ">=4"
   },
-  "resolutions": {
-    "colors": "1.4.0",
-    "globals@npm:^14.0.0": "patch:globals@npm%3A11.12.0#~/.yarn/patches/globals-npm-11.12.0-1fa7f41a6c.patch",
-    "globals@npm:^11.1.0": "patch:globals@npm%3A11.12.0#~/.yarn/patches/globals-npm-11.12.0-1fa7f41a6c.patch",
-    "globals@npm:^9.18.0": "patch:globals@npm%3A11.12.0#~/.yarn/patches/globals-npm-11.12.0-1fa7f41a6c.patch"
-  },
-  "sideEffects": true,
-  "type": "module",
   "webDocumentation": {
     "name": "pre-render-web-node-plugin",
     "trackingCode": "UA-40192634-28"
   },
-  "webNodeInternalName": "preRender",
   "webNode": {
     "preRender": {
       "cache": false,
@@ -120,6 +119,7 @@
       "renderAfterConfigurationUpdates": false
     }
   },
+  "webNodeInternalName": "preRender",
   "webOptimizer": {
     "targetTechnology": {
       "boilerplate": "node",
