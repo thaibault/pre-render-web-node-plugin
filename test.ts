@@ -17,6 +17,8 @@
 import type {RecursivePartial} from 'clientnode'
 import type {ServicePromises} from 'web-node/type'
 
+import type {Configuration, Services} from './type'
+
 import {copy, extend, timeout} from 'clientnode'
 import childProcess from 'child_process'
 import {configuration as baseConfiguration, loadAll, pluginAPI} from 'web-node'
@@ -32,7 +34,6 @@ import {
     renderFile,
     shouldExit
 } from './index'
-import {Configuration, Services} from './type'
 // endregion
 // region mockup
 let configuration: Configuration
