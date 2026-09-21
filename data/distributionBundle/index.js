@@ -16,9 +16,9 @@ import { rimraf as __WEBPACK_EXTERNAL_MODULE_rimraf_rimraf__ } from "rimraf";
 // -*- coding: utf-8 -*-
 /** @module pre-render-web-node-plugin *//* !
     region header
-    [Project page](https://torben.website/pre-render-web-node-plugin)
+    [Project page](https://tsickert.com/pre-render-web-node-plugin)
 
-    Copyright Torben Sickert (info["~at~"]torben.website) 16.12.2012
+    Copyright Torben Sickert (info["~at~"]tsickert.com) 16.12.2012
 
     License
     -------
