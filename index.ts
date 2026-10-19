@@ -32,8 +32,8 @@ import {spawn as spawnChildProcess} from 'child_process'
 import {
     CLOSE_EVENT_NAMES, getProcessCloseHandler, walkDirectoryRecursively
 } from 'clientnode'
+import {rm as remove} from 'fs/promises'
 import {basename, dirname, resolve} from 'path'
-import {rimraf as removeDirectoryRecursively} from 'rimraf'
 // endregion
 // region api
 /**
@@ -100,9 +100,7 @@ export const shouldExit = async (
         )
     )
         preRenderOutputRemovingPromises.push(
-            removeDirectoryRecursively(file.path).then(() => {
-                // Do nothing.
-            })
+            remove(file.path, {force: true, recursive: true})
         )
 
     await Promise.all(preRenderOutputRemovingPromises)
