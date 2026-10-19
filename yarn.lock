@@ -3264,15 +3264,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/rimraf@npm:^4.0.5":
-  version: 4.0.5
-  resolution: "@types/rimraf@npm:4.0.5"
-  dependencies:
-    rimraf: "npm:*"
-  checksum: 10c0/b4c17f5931ab7f7610c68aba58024717eecd11d16057b51d3f21a4180d36d1f5fea207503cba8a13749d61a1ac43d1bb795662f8b3638ad2501216017d232bf6
-  languageName: node
-  linkType: hard
-
 "@types/stack-utils@npm:^2.0.3":
   version: 2.0.3
   resolution: "@types/stack-utils@npm:2.0.3"
@@ -5995,9 +5986,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"eslint-plugin-jsdoc@npm:^65.3.8":
-  version: 65.3.8
-  resolution: "eslint-plugin-jsdoc@npm:65.3.8"
+"eslint-plugin-jsdoc@npm:^65.3.12":
+  version: 65.3.12
+  resolution: "eslint-plugin-jsdoc@npm:65.3.12"
   dependencies:
     "@es-joy/jsdoccomment": "npm:~0.98.0"
     "@es-joy/resolve.exports": "npm:1.2.0"
@@ -6020,7 +6011,7 @@ __metadata:
   peerDependenciesMeta:
     typescript:
       optional: true
-  checksum: 10c0/0d1a71c265faee5b897467d26bca81f6d667de0d67e94a0437c76cac74aa1e9e1421795c9c110f2c5afe8afe51b61aa7ff3297ca4a9d4573775dc7d5d7084c73
+  checksum: 10c0/69aeb8039c6d107b4c4e596818abcc1e43f6270896246b80042419fb87d371d71338287ca402d5a5e9886eebdc59e2e90191d4a4b9f4d7e6e50b4521901fcc8e
   languageName: node
   linkType: hard
 
@@ -6461,7 +6452,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"glob@npm:^10.2.2, glob@npm:^10.3.10, glob@npm:^10.3.7":
+"glob@npm:^10.2.2, glob@npm:^10.3.10":
   version: 10.3.10
   resolution: "glob@npm:10.3.10"
   dependencies:
@@ -8761,20 +8752,18 @@ __metadata:
     "@eslint/js": "npm:^10.0.1"
     "@stylistic/eslint-plugin": "npm:^5.10.0"
     "@types/node": "npm:^26.6.5"
-    "@types/rimraf": "npm:^4.0.5"
     "@types/webpack-env": "npm:^1.18.8"
     "@typescript-eslint/eslint-plugin": "npm:^8.71.2"
     "@typescript-eslint/parser": "npm:^8.71.2"
     clientnode: "npm:^4.0.1523"
     eslint: "npm:^10.13.0"
     eslint-config-google: "npm:^0.14.0"
-    eslint-plugin-jsdoc: "npm:^65.3.8"
+    eslint-plugin-jsdoc: "npm:^65.3.12"
     jest: "npm:^30.5.2"
     jsdoc: "npm:^4.0.5"
-    rimraf: "npm:^6.1.3"
     typescript-eslint: "npm:^8.71.2"
-    web-documentation: "npm:^1.0.61"
-    web-node: "npm:^1.0.629"
+    web-documentation: "npm:^1.0.63"
+    web-node: "npm:^1.0.631"
     weboptimizer: "npm:^4.0.89"
   peerDependencies:
     clientnode: "*"
@@ -9093,17 +9082,6 @@ __metadata:
   version: 0.12.0
   resolution: "retry@npm:0.12.0"
   checksum: 10c0/59933e8501727ba13ad73ef4a04d5280b3717fd650408460c987392efe9d7be2040778ed8ebe933c5cbd63da3dcc37919c141ef8af0a54a6e4fca5a2af177bfe
-  languageName: node
-  linkType: hard
-
-"rimraf@npm:*":
-  version: 5.0.5
-  resolution: "rimraf@npm:5.0.5"
-  dependencies:
-    glob: "npm:^10.3.7"
-  bin:
-    rimraf: dist/esm/bin.mjs
-  checksum: 10c0/d50dbe724f33835decd88395b25ed35995077c60a50ae78ded06e0185418914e555817aad1b4243edbff2254548c2f6ad6f70cc850040bebb4da9e8cc016f586
   languageName: node
   linkType: hard
 
@@ -10070,23 +10048,23 @@ __metadata:
   languageName: node
   linkType: hard
 
-"web-documentation@npm:^1.0.61":
-  version: 1.0.61
-  resolution: "web-documentation@npm:1.0.61"
+"web-documentation@npm:^1.0.63":
+  version: 1.0.63
+  resolution: "web-documentation@npm:1.0.63"
   bin:
     web-documentation: build/deploy.js
-  checksum: 10c0/061910670f04e036b2cba54db2f680c37b7725feb40bfca1fdd85fd3658a255047b384c091e9389e3c2412e35279276c669370782cbb40d0c348f74e8832b94c
+  checksum: 10c0/7488437786ccc29f00ba5cacc6c3fad49f880fa2e8f8f1a14eb27935947b3e9d05ec97ae041ae7b56b76327900b3b8f1bf3be4bb23740bbb4da1dcb0d8450725
   languageName: node
   linkType: hard
 
-"web-node@npm:^1.0.629":
-  version: 1.0.629
-  resolution: "web-node@npm:1.0.629"
+"web-node@npm:^1.0.631":
+  version: 1.0.631
+  resolution: "web-node@npm:1.0.631"
   peerDependencies:
     clientnode: "*"
   bin:
     web-node: main.js
-  checksum: 10c0/4296b5eb6a187053cdaa77dd2da6f8f80211c80fe42a111f6d6b1c6e6ff71530715eab58ef686d7b6e03c59713c4280ce895cc1529e5a8be1c60c52f265c085d
+  checksum: 10c0/23998acf7ec0a5bfb4230827f54d10a43bedc3d54e684a3f32dc6ae76791d07381f641069197245b85a6cd5ed1cce355a30a8612e1291c3de88fbd10f44a4ca2
   languageName: node
   linkType: hard
 
