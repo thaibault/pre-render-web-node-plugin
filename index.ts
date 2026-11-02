@@ -131,8 +131,8 @@ export const getPrerenderedOutputDirectories = async (
 
     const result: Array<File> = []
     for (const location of preRendererPaths)
-        result.concat(
-            (await walkDirectoryRecursively(
+        result.push(
+            ...(await walkDirectoryRecursively(
                 location,
                 (file: File): false | undefined => {
                     if (
@@ -229,23 +229,33 @@ export const render = async (
     }
 
     const preRenderingPromises: Array<Promise<ProcessCloseReason>> = []
-    for (const file of preRendererFiles)
+    for (const file of preRendererFiles) {
+        const parameters = await pluginAPI.callStack<
+            State<CLIParameters>, Array<string> | CLIParameters | string
+        >({
+            ...state,
+            hook: 'prePreRendererCLIParameter',
+            data: {
+                file,
+                parameters: ([] as Array<string>).concat(
+                    additionalCLIParameters,
+                    String(configuration.preRender.cache)
+                )
+            }
+        }) as Array<string> | CLIParameters | string
+
         preRenderingPromises.push(renderFile(
             file.path,
-            ([] as Array<string>).concat(await pluginAPI.callStack<
-                State<CLIParameters>, Array<string> | string
-            >({
-                ...state,
-                hook: 'prePreRendererCLIParameter',
-                data: {
-                    file,
-                    parameters: ([] as Array<string>).concat(
-                        additionalCLIParameters,
-                        String(configuration.preRender.cache)
-                    )
-                }
-            }) as Array<string>)
+            /*
+                NOTE: Given data will be returned unchanged if no plugin
+                handles this hook.
+            */
+            ([] as Array<string>).concat(
+                (parameters as Partial<CLIParameters>).parameters ??
+                parameters as Array<string> | string
+            )
         ))
+    }
 
     await Promise.all(preRenderingPromises)
 
