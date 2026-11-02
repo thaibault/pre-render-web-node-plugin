@@ -21,9 +21,12 @@ import type {Configuration, Services} from './type'
 
 import {copy, extend, timeout} from 'clientnode'
 import childProcess from 'child_process'
+import {chmod, mkdir, mkdtemp, readFile, rm, stat, writeFile} from 'fs/promises'
+import {tmpdir} from 'os'
+import {join} from 'path'
 import {configuration as baseConfiguration, loadAll, pluginAPI} from 'web-node'
 
-import {beforeAll, expect, test} from '@jest/globals'
+import {afterAll, beforeAll, expect, test} from '@jest/globals'
 
 import {
     getPrerenderedOutputDirectories,
@@ -37,9 +40,52 @@ import {
 // endregion
 // region mockup
 let configuration: Configuration
+let fixturePath: string
+let fixtureConfiguration: Configuration
 beforeAll(async (): Promise<void> => {
     configuration = (await loadAll(copy(baseConfiguration))).configuration as
         Configuration
+    /*
+        Fixture structure:
+
+        pre-render.js        -> executer writing "preRendered/index.html"
+        .hidden/pre-render.js -> ignored since hidden
+        ignored/preRendered  -> excluded via output exclude configuration
+        other                -> no pre-rendered output directory
+    */
+    fixturePath = await mkdtemp(join(tmpdir(), 'pre-render-test-'))
+    const executerPath = join(fixturePath, 'pre-render.js')
+    await writeFile(
+        executerPath,
+        `#!/usr/bin/env node
+import {mkdirSync, writeFileSync} from 'fs'
+
+mkdirSync('preRendered', {recursive: true})
+writeFileSync(
+    'preRendered/index.html', JSON.stringify(process.argv.slice(2))
+)
+`
+    )
+    await chmod(executerPath, 0o755)
+    await mkdir(join(fixturePath, '.hidden'))
+    await writeFile(join(fixturePath, '.hidden', 'pre-render.js'), '')
+    await mkdir(join(fixturePath, 'ignored', 'preRendered'), {recursive: true})
+    await mkdir(join(fixturePath, 'other'))
+
+    fixtureConfiguration = extend(
+        true,
+        copy(configuration),
+        {preRender: {
+            locations: {
+                executer: {include: [fixturePath]},
+                output: {exclude: ['ignored']}
+            },
+            renderAfterConfigurationUpdates: true
+        }} as RecursivePartial<Configuration>
+    )
+})
+afterAll(async (): Promise<void> => {
+    await rm(fixturePath, {force: true, recursive: true})
 })
 // endregion
 test('postConfigurationLoaded', async (): Promise<void> => {
@@ -58,6 +104,66 @@ test('postConfigurationLoaded', async (): Promise<void> => {
         pluginsWithChangedConfiguration: [],
         pluginAPI
     })).resolves.toBeUndefined()
+})
+test('postConfigurationHotLoaded renders', async (): Promise<void> => {
+    let rendered = false
+
+    await expect(postConfigurationHotLoaded({
+        configuration: fixtureConfiguration,
+        data: undefined,
+        hook: 'postConfigurationLoaded',
+        plugins: [],
+        pluginsWithChangedConfiguration: [],
+        pluginAPI,
+        services: {preRender: {render: () => {
+            rendered = true
+
+            return Promise.resolve()
+        }}}
+    })).resolves.toBeUndefined()
+
+    expect(rendered).toStrictEqual(true)
+})
+test('render, collect and remove pre-rendered output', async (): Promise<
+    void
+> => {
+    const executerPath = join(fixturePath, 'pre-render.js')
+    const outputPath = join(fixturePath, 'preRendered')
+
+    await expect(getPrerendererExecuter(fixtureConfiguration, [], pluginAPI))
+        .resolves.toMatchObject([{path: executerPath}])
+
+    const services = {} as Services
+    await expect(preLoadService({
+        configuration: fixtureConfiguration,
+        data: undefined,
+        hook: 'preLoadService',
+        plugins: [],
+        services,
+        pluginAPI
+    })).resolves.toBeUndefined()
+
+    expect(JSON.parse(
+        await readFile(join(outputPath, 'index.html'), 'utf8')
+    )).toStrictEqual(['false'])
+
+    await expect(getPrerenderedOutputDirectories(
+        fixtureConfiguration, [], pluginAPI
+    )).resolves.toMatchObject([{path: outputPath}])
+
+    await expect(shouldExit({
+        configuration: fixtureConfiguration,
+        data: undefined,
+        hook: 'shouldExit',
+        plugins: [],
+        servicePromises: {},
+        services,
+        pluginAPI
+    })).resolves.toBeUndefined()
+
+    await expect(stat(outputPath)).rejects.toThrow()
+    await expect(stat(join(fixturePath, 'ignored', 'preRendered')))
+        .resolves.toBeDefined()
 })
 test('preLoadService', async (): Promise<void> => {
     const testConfiguration: Configuration = extend(
