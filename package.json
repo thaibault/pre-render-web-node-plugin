@@ -85,8 +85,7 @@
     "yarn": ">=4"
   },
   "webDocumentation": {
-    "name": "pre-render-web-node-plugin",
-    "trackingCode": "UA-40192634-28"
+    "name": "pre-render-web-node-plugin"
   },
   "webNode": {
     "preRender": {
