@@ -85,6 +85,11 @@
     "yarn": ">=4"
   },
   "webDocumentation": {
+    "languages": [
+      "enUS",
+      "deDE",
+      "frFR"
+    ],
     "name": "pre-render-web-node-plugin"
   },
   "webNode": {
