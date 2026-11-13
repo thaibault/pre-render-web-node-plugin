@@ -69,7 +69,7 @@
     "typescript-eslint": "^8.72.1",
     "web-documentation": "^1.0.68",
     "web-node": "^1.0.638",
-    "weboptimizer": "^4.0.109"
+    "weboptimizer": "^4.0.115"
   },
   "peerDependencies": {
     "clientnode": "*",
