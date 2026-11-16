@@ -67,9 +67,9 @@
     "jest": "^30.5.2",
     "jsdoc": "^4.0.5",
     "typescript-eslint": "^8.72.2",
-    "web-documentation": "^1.0.74",
+    "web-documentation": "^1.0.76",
     "web-node": "^1.0.641",
-    "weboptimizer": "^4.0.119"
+    "weboptimizer": "^4.0.121"
   },
   "peerDependencies": {
     "clientnode": "*",
